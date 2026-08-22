@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>StudyMind AI - Study Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <h2 class="logo">StudyMind AI</h2>
+
+    <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#calendar">Calendar</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+    </ul>
+
+    <button id="themeButton">
+        🌙 Dark Mode
+    </button>
+
+</nav>
+
+
+<main class="dashboard-page">
+
+    <h1>My Study Dashboard</h1>
+
+    <p class="dashboard-subtitle">
+        Your personalized study plan
+    </p>
+
+
+    <!-- TOP STATISTICS -->
+
+    <section class="top-stats">
+
+        <div class="stat-card">
+
+            <div class="icon">🕒</div>
+
+            <h4>Weekly Hours</h4>
+
+            <h2 id="weeklyHours">0</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="icon">📅</div>
+
+            <h4>Days Left</h4>
+
+            <h2 id="daysLeft">0</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="icon">🎯</div>
+
+            <h4>Daily Goal</h4>
+
+            <h2 id="dailyGoal">0 hrs</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="icon">⭐</div>
+
+            <h4>Study Score</h4>
+
+            <h2 id="studyScore">0</h2>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- MAIN DASHBOARD -->
+
+    <section class="main-dashboard">
+
+
+        <!-- LEFT COLUMN -->
+
+        <div class="left-panel">
+
+
+            <!-- PROGRESS -->
+
+            <div class="panel-card">
+
+                <h2>✅ Progress Tracker</h2>
+
+                <div class="progress-circle">
+
+                    <span id="progressPercent">
+                        0%
+                    </span>
+
+                </div>
+
+                <p id="progressCount">
+                    0 of 0 subjects completed
+                </p>
+
+                <div class="progress-bar-container">
+
+                    <div id="progressBar"></div>
+
+                </div>
+
+            </div>
+
+<!-- SUBJECTS -->
+
+<div class="panel-card">
+
+    <h2>📚 Subjects</h2>
+
+<div id="subjectList" class="subject-list">
+
+        <!-- Subjects will be added by JavaScript -->
+
+    </div>
+
+</div>
+
+
+            <!-- STREAK -->
+
+            <div class="panel-card">
+
+                <h2>🔥 Study Streak</h2>
+
+                <h1 id="streak">
+                    0 Days
+                </h1>
+
+                <p>
+                    Keep it up! 🔥
+                </p>
+
+            </div>
+
+
+
+          <!-- LIVE STUDY SCORE -->
+
+<div class="panel-card study-score-card">
+
+    <h2>⭐ Study Score</h2>
+
+    <h1 class="score-number">
+        <span id="scoreDisplay">0</span>/100
+    </h1>
+
+    <p id="scoreMessage">
+        Start studying to build your score.
+    </p>
+
+    <div class="score-progress">
+        <div id="scoreProgressBar"></div>
+    </div>
+
+</div>
+
+        </div>
+
+
+
+        <!-- CALENDAR -->
+
+        <div class="calendar-panel" id="calendar">
+
+            <h2>📅 Study Calendar</h2>
+
+            <div class="calendar-header">
+
+                <button id="previousMonth">
+                    ‹
+                </button>
+
+                <h2 id="calendarMonth">
+                    Month Year
+                </h2>
+
+                <button id="nextMonth">
+                    ›
+                </button>
+
+            </div>
+
+
+            <div class="calendar-weekdays">
+
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+
+            </div>
+
+
+            <div
+                class="calendar-days"
+                id="calendarDays">
+            </div>
+<div class="calendar-legend">
+
+    <div class="legend-item">
+        <span class="legend-color study-color"></span>
+        <span>Study Day</span>
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-color completed-color"></span>
+        <span>Completed</span>
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-color exam-color"></span>
+        <span>Exam Day</span>
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-color today-color"></span>
+        <span>Today</span>
+    </div>
+
+</div>
+
+<div class="calendar-legend">
+
+    <div>
+        <span class="legend-dot study-dot"></span>
+        Study Day
+    </div>
+
+    <div>
+        <span class="legend-dot completed-dot"></span>
+        Completed
+    </div>
+
+    <div>
+        <span class="legend-dot exam-dot"></span>
+        Test / Exam
+    </div>
+
+    <div>
+        <span class="legend-dot break-dot"></span>
+        Break Day
+    </div>
+
+</div>
+
+
+            <div class="calendar-legend">
+
+                <span>
+                    🔵 Study Day
+                </span>
+
+                <span>
+                    🟢 Completed
+                </span>
+
+                <span>
+                    🟠 Test / Exam
+                </span>
+
+                <span>
+                    🟣 Break Day
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- BOTTOM SECTION -->
+
+    <section class="bottom-dashboard">
+
+
+   <!-- TODAY'S STUDY -->
+
+<div class="panel-card today-study-card">
+
+    <div class="study-card-header">
+
+        <div class="study-card-title">
+
+            <div class="study-icon">
+                🎯
+            </div>
+
+            <div>
+                <p class="study-eyebrow">
+                    CURRENT STUDY SESSION
+                </p>
+
+                <h2>Today's Focus</h2>
+            </div>
+
+        </div>
+
+        <div class="live-indicator">
+            <span></span>
+            LIVE
+        </div>
+
+    </div>
+
+
+    <div id="currentStudy" class="current-study">
+
+        <p class="study-label">
+            UP NEXT
+        </p>
+
+        <h2 id="currentSubject">
+            —
+        </h2>
+
+        <h3 id="currentTopic">
+            No topic available
+        </h3>
+
+
+        <div class="topic-time">
+
+            <div class="time-icon">
+                ⏱
+            </div>
+
+            <div>
+                <span class="time-label">
+                    Required study time
+                </span>
+
+                <strong id="topicTime">
+                    —
+                </strong>
+            </div>
+
+        </div>
+
+
+        <!-- TIMER -->
+
+        <div class="timer-container">
+
+            <p class="timer-label">
+                STUDY TIMER
+            </p>
+
+            <div
+                id="studyTimer"
+                class="study-timer"
+            >
+                00:00
+            </div>
+
+        </div>
+
+
+        <!-- START / PAUSE BUTTON -->
+
+        <button
+            id="startStudyButton"
+            class="start-study-button"
+        >
+            <span class="button-icon">▶</span>
+            <span>Start Studying</span>
+        </button>
+
+
+        <!-- COMPLETE TOPIC -->
+
+        <label class="complete-topic">
+
+            <input
+                type="checkbox"
+                id="completeTopicCheckbox"
+            >
+
+            <span class="custom-checkbox"></span>
+
+            <span class="complete-text">
+                I've completed this topic
+            </span>
+
+        </label>
+
+
+        <!-- COMPLETION MESSAGE -->
+
+        <p
+            id="completionMessage"
+            class="completion-message"
+        ></p>
+
+
+        <div class="study-tip">
+
+            <span>💡</span>
+
+            <p>
+                Stay focused and complete this topic
+                before moving to the next one.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+        <!-- TODAY'S SCHEDULE -->
+
+        <div class="panel-card" id="schedule">
+
+            <h2>🕒 Today's Schedule</h2>
+
+            <div id="todaySchedule">
+
+                <p>
+                    Your schedule will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="dashboard.js"></script>
+
+</body>
+
+</html>

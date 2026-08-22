@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMind AI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ==========================================
+     WELCOME PAGE
+========================================== -->
+
+<div class="welcome-page" id="welcomePage">
+
+    <div class="welcome-content">
+
+        <h1 class="welcome-title">
+            Study<span>Mind AI</span>
+        </h1>
+
+        <p>
+            Your personal AI study coach.
+            Plan smarter, study better, and reach your academic goals.
+        </p>
+
+        <a href="#mainApp" class="welcome-button">
+            Get Started
+            <span>→</span>
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+     MAIN APP
+========================================== -->
+
+<div id="mainApp">
+<nav class="navbar">
+<h2 class="logo">StudyMind AI</h2>
+<ul class="nav-links">
+<li><a href="#features">Features</a></li>
+<li><a href="#howItWorks">How It Works</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+<button id="themeButton">🌙 Dark Mode</button>
+</nav>
+<div class="hero">
+<div class="hero-text">
+<h1>StudyMind AI</h1>
+<p>Your personal AI study coach.</p>
+<p>Make studying faster and more efficient.</p>
+<button class="start-button"
+id="startButton">Start Now</button>
+</div>
+<div class="hero-image">
+<img src="ai.png.jpg" alt="AI studying">
+</div>
+</div>
+<div class="features" id="features">
+<h2>This App's Features</h2>
+<div class="feature-container">
+<div class="feature-box">
+<h3>📚 Personalized Study Plans</h3>
+<p>StudyMind AI creates an accurate and efficient study plan based on your subjects and upcoming exams.</p>
+</div>
+<div class="feature-box">
+<h3>🗓️ Smart Timetable</h3>
+<p>StudyMind AI automatically generates a balanced daily schedule.</p>
+</div>
+<div class="feature-box">
+<h3>🎯 Exam Preparation</h3>
+<p>Practice questions, revision tips and exam strategies with StudyMind AI.</p>
+</div>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+
+<div class="how-it-works" id="howItWorks">
+
+    <div class="how-header">
+
+      
+
+        <h2>
+            How It Works
+        </h2>
+
+        <p>
+            Get your personalized study plan in four simple steps.
+        </p>
+
+    </div>
+
+
+    <div class="steps-container">
+
+        <!-- STEP 1 -->
+
+        <div class="step-card">
+
+            <div class="step-icon">
+                🎓
+            </div>
+
+            <span class="step-number">
+                01
+            </span>
+
+            <h3>
+                Choose Curriculum
+            </h3>
+
+            <p>
+                Select your curriculum or discover School Based Tests
+                to match your exam preparation needs.
+            </p>
+
+        </div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="step-card">
+
+            <div class="step-icon">
+                📚
+            </div>
+
+            <span class="step-number">
+                02
+            </span>
+
+            <h3>
+                Add Subjects<br>& Topics
+            </h3>
+
+            <p>
+                Enter your subjects and topics, and tell us what
+                you need to focus on.
+            </p>
+
+        </div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="step-card">
+
+            <div class="step-icon">
+                🎯
+            </div>
+
+            <span class="step-number">
+                03
+            </span>
+
+            <h3>
+                Set Your Priorities
+            </h3>
+
+            <p>
+                Arrange your subjects from least difficult to most
+                difficult so we can prioritize your study time wisely.
+            </p>
+
+        </div>
+
+
+        <div class="step-arrow">
+            →
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="step-card">
+
+            <div class="step-icon">
+                🧠
+            </div>
+
+            <span class="step-number">
+                04
+            </span>
+
+            <h3>
+                Get Your Study Plan
+            </h3>
+
+            <p>
+                Receive a personalized timetable, smart recommendations,
+                and track your progress every step of the way.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="cta" id="cta">
+<h2>Ready to Study with Ease?</h2>
+<p>Join thousands of students using AI to improve their learning</p>
+<button class="cta-button">Get Started</button>
+</div>
+<div class="student-form" id="studentForm">
+<h2>Create Your Study Plan</h2>
+<label for="curriculum">Choose your curriculum:</label><br><br>
+<select id="curriculum">
+    <option>School Based Tests</option>
+    <option>WAEC</option>
+    <option>JAMB</option>
+    <option>NECO</option>
+    <option>IGCSE</option>
+    <option>SAT</option>
+    <option>Others</option>
+</select>
+
+<br><br>
+<label for="subjects">Subjects</label>
+
+<p class="input-tip">
+    🎯 <strong>Optimize Your Study Plan:</strong>
+    Enter your subjects from <strong>least difficult to most difficult</strong>.
+    StudyMind will use this order to prioritize your study sessions.
+</p>
+
+<input
+    type="text"
+    id="subjects"
+    placeholder="e.g. English, Biology, Chemistry, Mathematics"
+>
+
+
+<!-- TOPICS SECTION -->
+
+<div class="topics-card">
+
+    <div class="topics-header">
+
+        <div class="topics-icon">
+            📚
+        </div>
+
+        <div>
+            <h2>Subjects & Topics</h2>
+
+            <p>
+                Tell StudyMind AI what you need to study.
+                Add each subject followed by its topics.
+            </p>
+        </div>
+
+    </div>
+
+
+    <label for="topics">
+        Enter your subjects and topics
+    </label>
+
+    <textarea
+        id="topics"
+        rows="8"
+        placeholder="Example:
+
+Mathematics: Algebra, Geometry, Statistics
+Physics: Mechanics, Waves, Electricity
+Chemistry: Acids, Bases, Organic Chemistry"
+    ></textarea>
+
+
+    <div class="topics-tip">
+
+        <span>💡</span>
+
+        <div>
+            <strong>How to format your topics</strong>
+
+            <p>
+                Put one subject on each line and separate
+                topics with commas.
+            </p>
+        </div>
+
+    </div>
+
+
+    <button
+        type="button"
+        id="generateDifficultyButton"
+        class="difficulty-button"
+    >
+        🎯 Generate Topic Difficulty
+    </button>
+
+
+    <div
+        id="difficultySection"
+        class="difficulty-section"
+    ></div>
+
+</div>
+
+<label for="examDate">Enter your exam date:</label>
+<input type="date" id="examDate">
+<br><br>
+
+<label for="hoursPerDay">How many hours can you study each day?</label>
+<input
+type="number"
+id="hoursPerDay"
+placeholder="e.g. 3"
+min="1"
+max="16">
+<br><br>
+
+<label for="startTime">What time do you usually start studying?</label>
+<input
+type="time"
+id="startTime"
+value="16:00">
+<br><br>
+
+
+<br><br>
+<button id="generateButton">Generate Study Plan</button>
+
+<button id="clearButton">Clear Study Plan</button>
+
+<button id="downloadButton">
+Download PDF
+</button>
+
+<div id="studyPlan"></div>
+</div>
+<footer id="contact">
+    <h2>Contact Us</h2>
+  	<p>Email:
+	<a href="mailto:support@studymindai.com">
+	support@studymindai.com
+	</a>
+</p>
+   <p>Phone:
+	<a href="tel:+2348000000000">
+	+234 814 816 5088
+	</a>
+</p>
+    <p>&copy; 2026 StudyMind AI</p>
+</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
