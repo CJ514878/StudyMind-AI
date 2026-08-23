@@ -1,98 +1,71 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
-    // ==========================================
-    // ONLY ALLOW POST REQUESTS
-    // ==========================================
-
+    // Only allow POST requests
     if (req.method !== "POST") {
-
         return res.status(405).json({
             error: "Method not allowed"
         });
-
     }
-
 
     try {
 
-        // ==========================================
-        // GET PROMPT
-        // ==========================================
+        // Check that the API key exists
+        if (!process.env.OPENAI_API_KEY) {
 
+            console.error("OPENAI_API_KEY is missing.");
+
+            return res.status(500).json({
+                error: "OPENAI_API_KEY is not configured on Vercel."
+            });
+        }
+
+
+        // Get prompt from request
         const { prompt } = req.body || {};
 
 
-        if (!prompt) {
+        if (!prompt || typeof prompt !== "string") {
 
             return res.status(400).json({
-                error: "No prompt provided"
+                error: "No valid prompt provided."
             });
 
         }
 
 
-        // ==========================================
-        // CHECK API KEY
-        // ==========================================
-
-        if (!process.env.OPENAI_API_KEY) {
-
-            console.error(
-                "OPENAI_API_KEY is missing."
-            );
-
-            return res.status(500).json({
-                error: "OPENAI_API_KEY is not configured."
-            });
-
-        }
-
-
-        // ==========================================
-        // OPENAI REQUEST
-        // ==========================================
-
-        const response = await fetch(
+        // Call OpenAI
+        const openAIResponse = await fetch(
             "https://api.openai.com/v1/responses",
             {
-
                 method: "POST",
 
                 headers: {
-
-                    "Content-Type":
-                        "application/json",
-
+                    "Content-Type": "application/json",
                     "Authorization":
                         `Bearer ${process.env.OPENAI_API_KEY}`
-
                 },
 
                 body: JSON.stringify({
 
                     model: "gpt-5-mini",
 
+                    instructions:
+                        "You are StudyMind AI, a helpful and encouraging AI study coach. Help students understand their study plans, subjects, topics, revision strategies, exam preparation, and time management. Give clear, practical, age-appropriate educational advice.",
+
                     input: prompt
 
                 })
-
             }
         );
 
 
-        // ==========================================
-        // READ RESPONSE
-        // ==========================================
-
+        // Get OpenAI response
         const data =
-            await response.json();
+            await openAIResponse.json();
 
 
-        // ==========================================
-        // HANDLE OPENAI ERROR
-        // ==========================================
-
-        if (!response.ok) {
+        // Handle OpenAI errors
+        if (!openAIResponse.ok) {
 
             console.error(
                 "OpenAI API Error:",
@@ -100,7 +73,7 @@ export default async function handler(req, res) {
             );
 
             return res.status(
-                response.status
+                openAIResponse.status
             ).json({
 
                 error:
@@ -112,84 +85,49 @@ export default async function handler(req, res) {
         }
 
 
-        // ==========================================
-        // GET AI TEXT
-        // ==========================================
-
-        let answer =
+        // Get generated text
+        const answer =
             data.output_text;
-
-
-        /*
-        Some Responses API responses can expose
-        the text through the output structure.
-        This provides a fallback.
-        */
-
-        if (!answer && Array.isArray(data.output)) {
-
-            answer =
-                data.output
-                    .flatMap(item =>
-                        item.content || []
-                    )
-                    .filter(item =>
-                        item.type === "output_text"
-                    )
-                    .map(item =>
-                        item.text
-                    )
-                    .join("\n");
-
-        }
 
 
         if (!answer) {
 
             console.error(
-                "No AI text returned:",
+                "No output_text returned:",
                 data
             );
 
             return res.status(500).json({
-
                 error:
-                    "The AI returned an empty response."
-
+                    "OpenAI returned an empty response."
             });
 
         }
 
 
-        // ==========================================
-        // SUCCESS
-        // ==========================================
-
+        // Send answer back to browser
         return res.status(200).json({
 
             answer: answer
 
         });
 
-    }
 
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "Server Error:",
+            "StudyMind AI Server Error:",
             error
         );
-
 
         return res.status(500).json({
 
             error:
                 error.message ||
-                "Something went wrong."
+                "Something went wrong while connecting to the AI."
 
         });
 
     }
 
-}
+};
