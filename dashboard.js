@@ -1662,11 +1662,93 @@ document.addEventListener("DOMContentLoaded", function () {
                         "<p>🤖 StudyMind AI is analyzing your study plan...</p>";
 
 
-                    const prompt = `
+           javascript
+const context = getAIStudyContext();
+
+const prompt = `
 
 You are StudyMind AI, a personal AI study coach.
 
-Analyze this student's study plan.
+You are analyzing the student's CURRENT study dashboard.
+
+IMPORTANT:
+- Use the information provided below.
+- Do not invent subjects, topics, dates, scores, or progress.
+- If something is not provided, say that it is not available.
+- Give practical advice based on the student's actual situation.
+- Keep the response clear and student-friendly.
+
+===== STUDENT'S CURRENT STUDY DATA =====
+
+Curriculum:
+${context.curriculum}
+
+Subjects:
+${JSON.stringify(context.subjects)}
+
+Topics:
+${JSON.stringify(context.topics)}
+
+Topic difficulties:
+${JSON.stringify(context.topicDifficulties)}
+
+Exam date:
+${context.examDate}
+
+Days remaining:
+${context.daysLeft}
+
+Study hours per day:
+${context.hoursPerDay}
+
+Study start time:
+${context.startTime}
+
+Total topics:
+${context.totalTopics}
+
+Completed topics:
+${context.completedTopics}
+
+Overall progress:
+${context.progressPercent}%
+
+Current subject:
+${context.currentSubject}
+
+Current topic:
+${context.currentTopic}
+
+Time already spent on current topic:
+${context.currentTopicMinutes} minutes
+
+Live study score:
+${context.liveStudyScore}/100
+
+Study streak:
+${context.streak} days
+
+===== END STUDY DATA =====
+
+Analyze the student's preparation.
+
+Give:
+
+1. A short assessment of their current preparation.
+2. The most important weak areas.
+3. What they should focus on next and why.
+4. Whether their current progress is appropriate for the time remaining.
+5. How they should use their available study time.
+6. Specific advice for improving their preparation.
+7. One short encouraging message.
+
+Prioritize the CURRENT TOPIC and CURRENT PROGRESS when giving advice.
+
+Do not overwhelm the student with unnecessary information.
+
+`;
+
+
 
 Curriculum:
 ${studyData.curriculum}
