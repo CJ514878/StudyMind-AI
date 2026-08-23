@@ -1,3 +1,4 @@
+javascript
 // ==========================================
 // STUDYMIND AI - DASHBOARD
 // ==========================================
@@ -11,31 +12,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const savedData = localStorage.getItem("studyData");
 
     if (!savedData) {
-
         alert("No study plan was found. Please create a study plan first.");
-
         window.location.href = "index.html";
-
         return;
-
     }
 
     let studyData;
 
     try {
-
         studyData = JSON.parse(savedData);
-
     } catch (error) {
-
         console.error("Could not load study data:", error);
 
         alert("There was a problem loading your study plan.");
-
         window.location.href = "index.html";
 
         return;
-
     }
 
 
@@ -141,6 +133,110 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
+    // PROGRESS DATA
+    // ==========================================
+
+    function getProgressData() {
+
+        let progress;
+
+        try {
+
+            progress = JSON.parse(
+                localStorage.getItem("studyProgress")
+            );
+
+        } catch (error) {
+
+            progress = null;
+
+        }
+
+        if (!progress) {
+
+            progress = {
+                completedTopics: [],
+                studiedSeconds: {},
+                currentTopicIndex: 0
+            };
+
+        }
+
+        if (!Array.isArray(progress.completedTopics)) {
+            progress.completedTopics = [];
+        }
+
+        if (!progress.studiedSeconds) {
+            progress.studiedSeconds = {};
+        }
+
+        if (
+            typeof progress.currentTopicIndex !== "number"
+        ) {
+            progress.currentTopicIndex = 0;
+        }
+
+        return progress;
+
+    }
+
+
+    function saveProgress(progress) {
+
+        localStorage.setItem(
+            "studyProgress",
+            JSON.stringify(progress)
+        );
+
+    }
+
+
+    let progress =
+        getProgressData();
+
+
+    // ==========================================
+    // GET ALL TOPICS
+    // ==========================================
+
+    function getAllTopics() {
+
+        const allTopics = [];
+
+        const topics =
+            studyData.topics || {};
+
+        Object.keys(topics).forEach(
+            function (subject) {
+
+                const subjectTopics =
+                    Array.isArray(topics[subject])
+                        ? topics[subject]
+                        : [];
+
+                subjectTopics.forEach(
+                    function (topic) {
+
+                        allTopics.push({
+
+                            subject: subject,
+
+                            topic: topic
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+        return allTopics;
+
+    }
+
+
+    // ==========================================
     // TOP STATISTICS
     // ==========================================
 
@@ -191,41 +287,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let baseScore =
         Number(studyData.studyScore) || 0;
 
-    let completedTopics = 0;
-
-
-    function loadProgress() {
-
-        try {
-
-            const savedProgress =
-                JSON.parse(
-                    localStorage.getItem("studyProgress")
-                );
-
-            if (
-                savedProgress &&
-                Array.isArray(savedProgress.completedTopics)
-            ) {
-
-                completedTopics =
-                    savedProgress.completedTopics.length;
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Could not load study progress:",
-                error
-            );
-
-        }
-
-    }
-
-
-    loadProgress();
+    let completedTopics =
+        progress.completedTopics.length;
 
 
     function updateStudyScore() {
@@ -244,8 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        let liveScore =
+        const liveScore =
             Math.min(
                 100,
                 baseScore + progressBonus
@@ -312,149 +374,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // GET ALL TOPICS
-    // ==========================================
-
-    function getAllTopics() {
-
-        const allTopics = [];
-
-        const topics =
-            studyData.topics || {};
-
-
-        Object.keys(topics).forEach(
-            function (subject) {
-
-                const subjectTopics =
-                    Array.isArray(topics[subject])
-                        ? topics[subject]
-                        : [];
-
-                subjectTopics.forEach(
-                    function (topic) {
-
-                        allTopics.push({
-
-                            subject: subject,
-
-                            topic: topic
-
-                        });
-
-                    }
-                );
-
-            }
-        );
-
-
-        return allTopics;
-
-    }
-
-
-    // ==========================================
-    // PROGRESS DATA
-    // ==========================================
-
-    function getProgressData() {
-
-        let progress;
-
-        try {
-
-            progress =
-                JSON.parse(
-                    localStorage.getItem("studyProgress")
-                );
-
-        } catch (error) {
-
-            progress = null;
-
-        }
-
-
-        if (!progress) {
-
-            progress = {
-
-                completedTopics: [],
-
-                studiedSeconds: {},
-
-                currentTopicIndex: 0
-
-            };
-
-        }
-
-
-        if (!Array.isArray(progress.completedTopics)) {
-
-            progress.completedTopics = [];
-
-        }
-
-
-        if (!progress.studiedSeconds) {
-
-            progress.studiedSeconds = {};
-
-        }
-
-
-        if (
-            typeof progress.currentTopicIndex !== "number"
-        ) {
-
-            progress.currentTopicIndex = 0;
-
-        }
-
-
-        return progress;
-
-    }
-
-
-    function saveProgress(progress) {
-
-        localStorage.setItem(
-            "studyProgress",
-            JSON.stringify(progress)
-        );
-
-    }
-
-
-    // ==========================================
     // CURRENT TOPIC
     // ==========================================
-
-    let progress =
-        getProgressData();
-
 
     function getCurrentTopicData() {
 
         const allTopics =
             getAllTopics();
 
-
         if (allTopics.length === 0) {
-
             return null;
-
         }
-
 
         let index =
             progress.currentTopicIndex || 0;
 
 
-        // Find first incomplete topic
         while (
             index < allTopics.length &&
             progress.completedTopics.includes(index)
@@ -466,9 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if (index >= allTopics.length) {
-
             return null;
-
         }
 
 
@@ -500,9 +433,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderSubjects() {
 
         if (!subjectList) {
-
             return;
-
         }
 
 
@@ -510,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         subjects.forEach(
-            function (subject, index) {
+            function (subject) {
 
                 const topics =
                     studyData.topics &&
@@ -554,9 +485,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     function (level) {
 
                         if (level === "weak") {
-
                             weakCount++;
-
                         }
 
                     }
@@ -613,7 +542,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const allTopics =
             getAllTopics();
-
 
         const total =
             allTopics.length;
@@ -728,7 +656,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (topicTime) {
 
             topicTime.textContent =
-                `${hoursPerDay > 0 ? Math.round((hoursPerDay * 60) / Math.max(subjects.length, 1)) : 30} min`;
+                `${hoursPerDay > 0
+                    ? Math.round(
+                        (hoursPerDay * 60) /
+                        Math.max(subjects.length, 1)
+                    )
+                    : 30} min`;
 
         }
 
@@ -756,9 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         if (!current) {
-
             return;
-
         }
 
 
@@ -832,11 +763,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function formatTimer(seconds) {
 
+        const hours =
+            Math.floor(seconds / 3600);
+
         const minutes =
-            Math.floor(seconds / 60);
+            Math.floor(
+                (seconds % 3600) / 60
+            );
 
         const remainingSeconds =
             seconds % 60;
+
+
+        if (hours > 0) {
+
+            return (
+                String(hours).padStart(2, "0") +
+                ":" +
+                String(minutes).padStart(2, "0") +
+                ":" +
+                String(remainingSeconds).padStart(2, "0")
+            );
+
+        }
 
 
         return (
@@ -863,9 +812,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function startTimer() {
 
         if (timerRunning) {
-
             return;
+        }
 
+
+        const current =
+            getCurrentTopicData();
+
+
+        if (!current) {
+            return;
         }
 
 
@@ -889,14 +845,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     updateTimerDisplay();
 
 
-                    const current =
+                    const currentTopicData =
                         getCurrentTopicData();
 
 
-                    if (current) {
+                    if (currentTopicData) {
 
                         const key =
-                            String(current.index);
+                            String(
+                                currentTopicData.index
+                            );
 
 
                         progress.studiedSeconds[key] =
@@ -967,9 +925,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderTodaySchedule() {
 
         if (!todaySchedule) {
-
             return;
-
         }
 
 
@@ -1019,9 +975,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (twelveHour === 0) {
-
                 twelveHour = 12;
-
             }
 
 
@@ -1040,9 +994,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             if (nextTwelveHour === 0) {
-
                 nextTwelveHour = 12;
-
             }
 
 
@@ -1054,8 +1006,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 ] || "Study";
 
 
-            let topic =
-                "";
+            let topic = "";
 
 
             if (
@@ -1126,15 +1077,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderCalendar() {
 
         if (!calendarDays || !calendarMonth) {
-
             return;
-
         }
 
 
         const year =
             calendarDate.getFullYear();
-
 
         const month =
             calendarDate.getMonth();
@@ -1160,8 +1108,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `${monthNames[month]} ${year}`;
 
 
-        calendarDays.innerHTML =
-            "";
+        calendarDays.innerHTML = "";
 
 
         const firstDay =
@@ -1182,6 +1129,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const today =
             new Date();
+
+
+        let completedDays = [];
+
+
+        try {
+
+            completedDays =
+                JSON.parse(
+                    localStorage.getItem(
+                        "completedStudyDays"
+                    ) || "[]"
+                );
+
+        } catch (error) {
+
+            completedDays = [];
+
+        }
 
 
         for (
@@ -1230,6 +1196,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // TODAY
+
             if (
                 date.toDateString() ===
                 today.toDateString()
@@ -1243,6 +1210,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // EXAM DAY
+
             if (
                 examDate &&
                 dateString === examDate
@@ -1259,13 +1227,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // COMPLETED STUDY DAY
-            const completedDays =
-                JSON.parse(
-                    localStorage.getItem(
-                        "completedStudyDays"
-                    ) || "[]"
-                );
-
 
             if (
                 completedDays.includes(
@@ -1281,6 +1242,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // STUDY DAY
+
             if (
                 exam &&
                 date >= today &&
@@ -1356,12 +1318,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 .split("T")[0];
 
 
-        let completedDays =
-            JSON.parse(
-                localStorage.getItem(
-                    "completedStudyDays"
-                ) || "[]"
-            );
+        let completedDays = [];
+
+
+        try {
+
+            completedDays =
+                JSON.parse(
+                    localStorage.getItem(
+                        "completedStudyDays"
+                    ) || "[]"
+                );
+
+        } catch (error) {
+
+            completedDays = [];
+
+        }
 
 
         if (
@@ -1387,21 +1360,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-```javascript
+
     // ==========================================
     // BUILD LIVE AI STUDY CONTEXT
     // ==========================================
 
     function getAIStudyContext() {
 
-        const allTopics = getAllTopics();
+        const allTopics =
+            getAllTopics();
 
-        const current = getCurrentTopicData();
 
-        const totalTopics = allTopics.length;
+        const current =
+            getCurrentTopicData();
+
+
+        const totalTopics =
+            allTopics.length;
+
 
         const completed =
             progress.completedTopics.length;
+
 
         const progressPercent =
             totalTopics > 0
@@ -1409,6 +1389,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     (completed / totalTopics) * 100
                 )
                 : 0;
+
 
         const liveScore =
             totalTopics > 0
@@ -1421,6 +1402,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
                 : baseScore;
 
+
         const currentTopicTime =
             current
                 ? (
@@ -1430,30 +1412,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
                 : 0;
 
+
         const currentTopicMinutes =
             Math.floor(
                 currentTopicTime / 60
             );
 
+
         return {
 
             curriculum:
-                studyData.curriculum || "Not specified",
+                studyData.curriculum ||
+                "Not specified",
 
             subjects:
                 subjects,
 
             topics:
-                studyData.topics || {},
+                studyData.topics ||
+                {},
 
             topicDifficulties:
-                studyData.topicDifficulty || {},
+                studyData.topicDifficulty ||
+                {},
 
             examDate:
-                examDate || "Not specified",
+                examDate ||
+                "Not specified",
 
             daysLeft:
-                studyData.daysLeft || 0,
+                studyData.daysLeft ||
+                0,
 
             hoursPerDay:
                 hoursPerDay,
@@ -1484,15 +1473,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 liveScore,
 
             streak:
-                studyData.streak || 0,
+                studyData.streak ||
+                0,
 
             startTime:
-                studyData.startTime || "16:00"
+                studyData.startTime ||
+                "16:00"
 
         };
 
     }
-```
+
 
     // ==========================================
     // AI STUDY COACH
@@ -1514,8 +1505,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const section =
             document.createElement("section");
 
+
         section.className =
             "panel-card dashboard-ai";
+
 
         section.id =
             "dashboardAI";
@@ -1595,62 +1588,9 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
 
-       
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    prompt: prompt
-                                })
-
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.error ||
-                        "AI request failed"
-                    );
-
-                }
-
-
-                return data.answer;
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "AI Error:",
-                    error
-                );
-
-
-                return "Sorry, I couldn't connect to the AI right now. Please try again.";
-
-            }
-
-        }
-
+        // ==========================================
+        // ANALYZE STUDY PLAN
+        // ==========================================
 
         if (analyzeButton) {
 
@@ -1659,26 +1599,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 async function () {
 
                     responseBox.innerHTML =
-                        "<p>🤖 StudyMind AI is analyzing your study plan...</p>";
+                        "<p>🤖 StudyMind AI is analyzing your current study plan...</p>";
 
 
-           javascript
-const context = getAIStudyContext();
+                    const context =
+                        getAIStudyContext();
 
-const prompt = `
+
+                    const prompt = `
 
 You are StudyMind AI, a personal AI study coach.
 
-You are analyzing the student's CURRENT study dashboard.
+Analyze this student's CURRENT study dashboard.
 
 IMPORTANT:
-- Use the information provided below.
+- Use only the information provided below.
 - Do not invent subjects, topics, dates, scores, or progress.
-- If something is not provided, say that it is not available.
+- If something is not available, say so.
 - Give practical advice based on the student's actual situation.
 - Keep the response clear and student-friendly.
 
-===== STUDENT'S CURRENT STUDY DATA =====
+===== CURRENT STUDY DATA =====
 
 Curriculum:
 ${context.curriculum}
@@ -1698,7 +1639,7 @@ ${context.examDate}
 Days remaining:
 ${context.daysLeft}
 
-Study hours per day:
+Hours per day:
 ${context.hoursPerDay}
 
 Study start time:
@@ -1730,13 +1671,11 @@ ${context.streak} days
 
 ===== END STUDY DATA =====
 
-Analyze the student's preparation.
-
-Give:
+Give the student:
 
 1. A short assessment of their current preparation.
-2. The most important weak areas.
-3. What they should focus on next and why.
+2. Their most important weak areas.
+3. What they should study next and why.
 4. Whether their current progress is appropriate for the time remaining.
 5. How they should use their available study time.
 6. Specific advice for improving their preparation.
@@ -1749,62 +1688,22 @@ Do not overwhelm the student with unnecessary information.
 `;
 
 
-
-Curriculum:
-${studyData.curriculum}
-
-Subjects:
-${subjects.join(", ")}
-
-Topics:
-${JSON.stringify(studyData.topics)}
-
-Topic difficulties:
-${JSON.stringify(studyData.topicDifficulty)}
-
-Exam date:
-${studyData.examDate}
-
-Days left:
-${studyData.daysLeft}
-
-Hours per day:
-${studyData.hoursPerDay}
-
-Current study score:
-${studyData.studyScore}
-
-Current streak:
-${studyData.streak}
-
-Give the student:
-
-1. An assessment of their preparation.
-2. Their most important weak areas.
-3. What they should study first.
-4. How they should use their available study time.
-5. Specific advice for the exam.
-6. One short motivational message.
-
-Keep the response clear, practical and student-friendly.
-
-                    `;
-
-
                     const answer =
                         await askAI(prompt);
 
 
                     responseBox.innerHTML =
-                        formatAIResponse(
-                            answer
-                        );
+                        formatAIResponse(answer);
 
                 }
             );
 
         }
 
+
+        // ==========================================
+        // ASK AI QUESTION
+        // ==========================================
 
         if (askButton) {
 
@@ -1830,52 +1729,84 @@ Keep the response clear, practical and student-friendly.
                         "<p>🤖 Thinking...</p>";
 
 
+                    const context =
+                        getAIStudyContext();
+
+
                     const prompt = `
 
 You are StudyMind AI, the student's personal study coach.
 
-Here is the student's current study data:
+Answer the student's question using their CURRENT StudyMind dashboard data.
+
+IMPORTANT:
+- Answer the student's actual question directly.
+- Use their study data whenever relevant.
+- Do not invent information.
+- Do not claim the student completed something unless the data says so.
+- If information is unavailable, say so.
+- Keep the answer clear and useful for a student.
+- When useful, connect your advice to their current topic, weak areas, progress, and exam date.
+
+===== CURRENT STUDY DATA =====
 
 Curriculum:
-${studyData.curriculum}
+${context.curriculum}
 
 Subjects:
-${subjects.join(", ")}
+${JSON.stringify(context.subjects)}
 
 Topics:
-${JSON.stringify(studyData.topics)}
+${JSON.stringify(context.topics)}
 
 Topic difficulties:
-${JSON.stringify(studyData.topicDifficulty)}
+${JSON.stringify(context.topicDifficulties)}
 
 Exam date:
-${studyData.examDate}
+${context.examDate}
 
-Days left:
-${studyData.daysLeft}
+Days remaining:
+${context.daysLeft}
 
 Hours per day:
-${studyData.hoursPerDay}
+${context.hoursPerDay}
 
-Study score:
-${studyData.studyScore}
+Study start time:
+${context.startTime}
 
-Streak:
-${studyData.streak}
+Total topics:
+${context.totalTopics}
 
-The student asks:
+Completed topics:
+${context.completedTopics}
+
+Overall progress:
+${context.progressPercent}%
+
+Current subject:
+${context.currentSubject}
+
+Current topic:
+${context.currentTopic}
+
+Time spent on current topic:
+${context.currentTopicMinutes} minutes
+
+Live study score:
+${context.liveStudyScore}/100
+
+Study streak:
+${context.streak} days
+
+===== STUDENT'S QUESTION =====
 
 "${question}"
 
-Answer the student's question directly.
+===== END DATA =====
 
-Use their study data when relevant.
+Answer the student's question now.
 
-Do not make up information about their plan.
-
-Keep the answer useful, clear and appropriate for a student.
-
-                    `;
+`;
 
 
                     const answer =
@@ -1883,9 +1814,7 @@ Keep the answer useful, clear and appropriate for a student.
 
 
                     responseBox.innerHTML =
-                        formatAIResponse(
-                            answer
-                        );
+                        formatAIResponse(answer);
 
                 }
             );
@@ -1903,7 +1832,11 @@ Keep the answer useful, clear and appropriate for a student.
 
         if (!text) {
 
-            return "<p>The AI returned an empty response.</p>";
+            return `
+                <p>
+                    The AI returned an empty response.
+                </p>
+            `;
 
         }
 
@@ -2074,3 +2007,4 @@ Keep the answer useful, clear and appropriate for a student.
     }
 
 });
+
