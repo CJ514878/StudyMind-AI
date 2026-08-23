@@ -1,4 +1,3 @@
-javascript
 // ==========================================
 // STUDYMIND AI - DASHBOARD
 // ==========================================
@@ -83,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // BASIC STUDY DATA
+    // BASIC DATA
     // ==========================================
 
     const subjects =
@@ -104,33 +103,66 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
-    // TOP STATISTICS
+    // PROGRESS DATA
     // ==========================================
 
-    if (weeklyHours) {
-        weeklyHours.textContent =
-            hoursPerDay * 7;
+    function getProgressData() {
+
+        try {
+
+            const savedProgress =
+                JSON.parse(
+                    localStorage.getItem("studyProgress")
+                );
+
+            if (savedProgress) {
+
+                if (!Array.isArray(savedProgress.completedTopics)) {
+                    savedProgress.completedTopics = [];
+                }
+
+                if (!savedProgress.studiedSeconds) {
+                    savedProgress.studiedSeconds = {};
+                }
+
+                if (
+                    typeof savedProgress.currentTopicIndex !== "number"
+                ) {
+                    savedProgress.currentTopicIndex = 0;
+                }
+
+                return savedProgress;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Could not load study progress:",
+                error
+            );
+
+        }
+
+        return {
+            completedTopics: [],
+            studiedSeconds: {},
+            currentTopicIndex: 0
+        };
     }
 
-    if (daysLeft) {
-        daysLeft.textContent =
-            studyData.daysLeft || 0;
+
+    function saveProgress(progress) {
+
+        localStorage.setItem(
+            "studyProgress",
+            JSON.stringify(progress)
+        );
+
     }
 
-    if (dailyGoal) {
-        dailyGoal.textContent =
-            `${hoursPerDay} hrs`;
-    }
 
-    if (studyScore) {
-        studyScore.textContent =
-            studyData.studyScore || 0;
-    }
-
-    if (streakElement) {
-        streakElement.textContent =
-            `${studyData.streak || 0} Days`;
-    }
+    let progress =
+        getProgressData();
 
 
     // ==========================================
@@ -163,191 +195,44 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         return allTopics;
-    }
-
-
-    // ==========================================
-    // PROGRESS DATA
-    // ==========================================
-
-    function getProgressData() {
-
-        let progress;
-
-        try {
-
-            progress =
-                JSON.parse(
-                    localStorage.getItem("studyProgress")
-                );
-
-        } catch (error) {
-
-            progress = null;
-
-        }
-
-        if (!progress) {
-
-            progress = {
-                completedTopics: [],
-                studiedSeconds: {},
-                currentTopicIndex: 0
-            };
-
-        }
-
-        if (!Array.isArray(progress.completedTopics)) {
-            progress.completedTopics = [];
-        }
-
-        if (!progress.studiedSeconds) {
-            progress.studiedSeconds = {};
-        }
-
-        if (
-            typeof progress.currentTopicIndex !== "number"
-        ) {
-
-            progress.currentTopicIndex = 0;
-
-        }
-
-        return progress;
-    }
-
-
-    function saveProgress(progress) {
-
-        localStorage.setItem(
-            "studyProgress",
-            JSON.stringify(progress)
-        );
 
     }
 
 
-    let progress = getProgressData();
-
-
     // ==========================================
-    // CURRENT TOPIC
+    // TOP STATISTICS
     // ==========================================
 
-    function getCurrentTopicData() {
+    function renderStatistics() {
 
-        const allTopics =
-            getAllTopics();
+        if (weeklyHours) {
 
-        if (allTopics.length === 0) {
-            return null;
-        }
-
-        let index =
-            progress.currentTopicIndex || 0;
-
-        while (
-            index < allTopics.length &&
-            progress.completedTopics.includes(index)
-        ) {
-
-            index++;
+            weeklyHours.textContent =
+                hoursPerDay * 7;
 
         }
 
-        if (index >= allTopics.length) {
-            return null;
+        if (daysLeft) {
+
+            daysLeft.textContent =
+                studyData.daysLeft || 0;
+
         }
 
-        progress.currentTopicIndex =
-            index;
+        if (dailyGoal) {
 
-        saveProgress(progress);
+            dailyGoal.textContent =
+                `${hoursPerDay} hrs`;
 
-        return {
-            index: index,
-            subject: allTopics[index].subject,
-            topic: allTopics[index].topic
-        };
-    }
-
-
-    // ==========================================
-    // SUBJECTS
-    // ==========================================
-
-    function renderSubjects() {
-
-        if (!subjectList) {
-            return;
         }
 
-        subjectList.innerHTML = "";
+        if (streakElement) {
 
-        subjects.forEach(function (subject) {
+            streakElement.textContent =
+                `${studyData.streak || 0} Days`;
 
-            const topics =
-                studyData.topics &&
-                Array.isArray(studyData.topics[subject])
-                    ? studyData.topics[subject]
-                    : [];
+        }
 
-            const subjectCard =
-                document.createElement("div");
-
-            subjectCard.className =
-                "dashboard-subject";
-
-            const subjectTitle =
-                document.createElement("h3");
-
-            subjectTitle.textContent =
-                `📚 ${subject}`;
-
-            const subjectInfo =
-                document.createElement("p");
-
-            subjectInfo.textContent =
-                `${topics.length} topic${topics.length === 1 ? "" : "s"}`;
-
-            const difficulty =
-                studyData.topicDifficulty &&
-                studyData.topicDifficulty[subject]
-                    ? studyData.topicDifficulty[subject]
-                    : {};
-
-            let weakCount = 0;
-
-            Object.values(difficulty).forEach(function (level) {
-
-                if (level === "weak") {
-                    weakCount++;
-                }
-
-            });
-
-            const difficultyInfo =
-                document.createElement("p");
-
-            if (weakCount > 0) {
-
-                difficultyInfo.textContent =
-                    `🔴 ${weakCount} weak topic${weakCount === 1 ? "" : "s"}`;
-
-            } else {
-
-                difficultyInfo.textContent =
-                    "🟢 No weak topics";
-
-            }
-
-            subjectCard.appendChild(subjectTitle);
-            subjectCard.appendChild(subjectInfo);
-            subjectCard.appendChild(difficultyInfo);
-
-            subjectList.appendChild(subjectCard);
-
-        });
     }
 
 
@@ -384,14 +269,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 baseScore + progressBonus
             );
 
+
         if (scoreDisplay) {
+
             scoreDisplay.textContent =
                 liveScore;
+
         }
 
         if (studyScore) {
+
             studyScore.textContent =
                 liveScore;
+
         }
 
         if (scoreProgressBar) {
@@ -401,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
         if (scoreMessage) {
 
             if (liveScore >= 90) {
@@ -408,17 +299,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 scoreMessage.textContent =
                     "🏆 Excellent work! You're maintaining a strong study routine.";
 
-            } else if (liveScore >= 75) {
+            }
+
+            else if (liveScore >= 75) {
 
                 scoreMessage.textContent =
                     "⭐ Great progress! Keep following your study plan.";
 
-            } else if (liveScore >= 60) {
+            }
+
+            else if (liveScore >= 60) {
 
                 scoreMessage.textContent =
                     "⚠️ You're making progress. Stay consistent and complete more topics.";
 
-            } else {
+            }
+
+            else {
 
                 scoreMessage.textContent =
                     "📚 Keep studying and completing topics to improve your score.";
@@ -426,6 +323,94 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         }
+
+    }
+
+
+    // ==========================================
+    // SUBJECTS
+    // ==========================================
+
+    function renderSubjects() {
+
+        if (!subjectList) {
+            return;
+        }
+
+        subjectList.innerHTML = "";
+
+        subjects.forEach(function (subject) {
+
+            const topics =
+                studyData.topics &&
+                studyData.topics[subject]
+                    ? studyData.topics[subject]
+                    : [];
+
+            const difficulty =
+                studyData.topicDifficulty &&
+                studyData.topicDifficulty[subject]
+                    ? studyData.topicDifficulty[subject]
+                    : {};
+
+
+            let weakCount = 0;
+
+            Object.values(difficulty).forEach(function (level) {
+
+                if (level === "weak") {
+                    weakCount++;
+                }
+
+            });
+
+
+            const subjectCard =
+                document.createElement("div");
+
+            subjectCard.className =
+                "dashboard-subject";
+
+
+            const subjectTitle =
+                document.createElement("h3");
+
+            subjectTitle.textContent =
+                `📚 ${subject}`;
+
+
+            const subjectInfo =
+                document.createElement("p");
+
+            subjectInfo.textContent =
+                `${topics.length} topic${topics.length === 1 ? "" : "s"}`;
+
+
+            const difficultyInfo =
+                document.createElement("p");
+
+
+            if (weakCount > 0) {
+
+                difficultyInfo.textContent =
+                    `🔴 ${weakCount} weak topic${weakCount === 1 ? "" : "s"}`;
+
+            } else {
+
+                difficultyInfo.textContent =
+                    "🟢 No weak topics";
+
+            }
+
+
+            subjectCard.appendChild(subjectTitle);
+            subjectCard.appendChild(subjectInfo);
+            subjectCard.appendChild(difficultyInfo);
+
+            subjectList.appendChild(subjectCard);
+
+        });
+
     }
 
 
@@ -435,80 +420,159 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateProgressDisplay() {
 
+        const allTopics =
+            getAllTopics();
+
         const total =
-            getAllTopics().length;
+            allTopics.length;
 
         const completed =
             progress.completedTopics.length;
 
         const percent =
             total > 0
-                ? Math.round((completed / total) * 100)
+                ? Math.round(
+                    (completed / total) * 100
+                )
                 : 0;
 
+
         if (progressPercent) {
+
             progressPercent.textContent =
                 `${percent}%`;
+
         }
 
         if (progressBar) {
+
             progressBar.style.width =
                 `${percent}%`;
+
         }
 
         if (progressCount) {
+
             progressCount.textContent =
                 `${completed} of ${total} topics completed`;
+
         }
 
         updateStudyScore();
+
     }
 
 
     // ==========================================
-    // CURRENT STUDY SESSION
+    // CURRENT TOPIC
     // ==========================================
+
+    function getCurrentTopicData() {
+
+        const allTopics =
+            getAllTopics();
+
+        if (allTopics.length === 0) {
+            return null;
+        }
+
+
+        let index =
+            progress.currentTopicIndex || 0;
+
+
+        while (
+            index < allTopics.length &&
+            progress.completedTopics.includes(index)
+        ) {
+
+            index++;
+
+        }
+
+
+        if (index >= allTopics.length) {
+            return null;
+        }
+
+
+        progress.currentTopicIndex =
+            index;
+
+        saveProgress(progress);
+
+
+        return {
+            index: index,
+            subject: allTopics[index].subject,
+            topic: allTopics[index].topic
+        };
+
+    }
+
 
     function renderCurrentStudy() {
 
         const current =
             getCurrentTopicData();
 
+
         if (!current) {
 
             if (currentSubject) {
+
                 currentSubject.textContent =
                     "🎉 All Topics Complete!";
+
             }
 
             if (currentTopic) {
+
                 currentTopic.textContent =
                     "Amazing work. You've completed your study plan.";
+
             }
 
             if (topicTime) {
+
                 topicTime.textContent =
                     "Complete";
+
             }
 
             if (startStudyButton) {
-                startStudyButton.disabled = true;
+
+                startStudyButton.disabled =
+                    true;
+
             }
 
             return;
+
         }
 
+
+        if (startStudyButton) {
+            startStudyButton.disabled = false;
+        }
+
+
         if (currentSubject) {
+
             currentSubject.textContent =
                 current.subject;
+
         }
 
         if (currentTopic) {
+
             currentTopic.textContent =
                 current.topic;
+
         }
 
-        const minutes =
+
+        const minutesPerTopic =
             hoursPerDay > 0
                 ? Math.round(
                     (hoursPerDay * 60) /
@@ -516,10 +580,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 )
                 : 30;
 
+
         if (topicTime) {
+
             topicTime.textContent =
-                `${minutes} min`;
+                `${minutesPerTopic} min`;
+
         }
+
 
         if (completeTopicCheckbox) {
 
@@ -529,41 +597,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
 
         }
+
     }
 
 
     // ==========================================
     // COMPLETE TOPIC
     // ==========================================
-
-    function markTodayAsStudied() {
-
-        const todayString =
-            new Date()
-                .toISOString()
-                .split("T")[0];
-
-        let completedDays =
-            JSON.parse(
-                localStorage.getItem(
-                    "completedStudyDays"
-                ) || "[]"
-            );
-
-        if (!completedDays.includes(todayString)) {
-
-            completedDays.push(todayString);
-
-        }
-
-        localStorage.setItem(
-            "completedStudyDays",
-            JSON.stringify(completedDays)
-        );
-
-        renderCalendar();
-    }
-
 
     function completeCurrentTopic() {
 
@@ -573,6 +613,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!current) {
             return;
         }
+
 
         if (
             !progress.completedTopics.includes(
@@ -586,10 +627,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
         progress.currentTopicIndex =
             current.index + 1;
 
+
         saveProgress(progress);
+
 
         if (completionMessage) {
 
@@ -598,11 +642,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
         markTodayAsStudied();
 
         updateProgressDisplay();
+
         renderCurrentStudy();
+
         renderTodaySchedule();
+
     }
 
 
@@ -639,10 +687,13 @@ document.addEventListener("DOMContentLoaded", function () {
             Math.floor(seconds / 3600);
 
         const minutes =
-            Math.floor((seconds % 3600) / 60);
+            Math.floor(
+                (seconds % 3600) / 60
+            );
 
         const remainingSeconds =
             seconds % 60;
+
 
         if (hours > 0) {
 
@@ -656,11 +707,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
         return (
             String(minutes).padStart(2, "0") +
             ":" +
             String(remainingSeconds).padStart(2, "0")
         );
+
     }
 
 
@@ -672,6 +725,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 formatTimer(timerSeconds);
 
         }
+
     }
 
 
@@ -681,7 +735,18 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+
+        const current =
+            getCurrentTopicData();
+
+
+        if (!current) {
+            return;
+        }
+
+
         timerRunning = true;
+
 
         if (startStudyButton) {
 
@@ -690,6 +755,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+
         timerInterval =
             setInterval(function () {
 
@@ -697,22 +763,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 updateTimerDisplay();
 
-                const current =
+
+                const currentTopic =
                     getCurrentTopicData();
 
-                if (current) {
+
+                if (currentTopic) {
 
                     const key =
-                        String(current.index);
+                        String(currentTopic.index);
+
 
                     progress.studiedSeconds[key] =
-                        (progress.studiedSeconds[key] || 0) + 1;
+                        (
+                            progress.studiedSeconds[key] || 0
+                        ) + 1;
+
 
                     saveProgress(progress);
 
                 }
 
             }, 1000);
+
     }
 
 
@@ -722,12 +795,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearInterval(timerInterval);
 
+
         if (startStudyButton) {
 
             startStudyButton.innerHTML =
                 '<span class="button-icon">▶</span><span>Resume Studying</span>';
 
         }
+
     }
 
 
@@ -738,9 +813,13 @@ document.addEventListener("DOMContentLoaded", function () {
             function () {
 
                 if (timerRunning) {
+
                     pauseTimer();
+
                 } else {
+
                     startTimer();
+
                 }
 
             }
@@ -759,19 +838,27 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+
         todaySchedule.innerHTML = "";
+
 
         const current =
             getCurrentTopicData();
 
+
         const currentDay =
             new Date().getDay();
+
 
         const startTime =
             studyData.startTime || "16:00";
 
+
         const startHour =
-            Number(startTime.split(":")[0]);
+            Number(
+                startTime.split(":")[0]
+            );
+
 
         for (
             let i = 0;
@@ -782,45 +869,55 @@ document.addEventListener("DOMContentLoaded", function () {
             const hour =
                 startHour + i;
 
+
             const displayHour =
                 hour % 24;
+
 
             const period =
                 displayHour >= 12
                     ? "PM"
                     : "AM";
 
+
             let twelveHour =
                 displayHour % 12;
+
 
             if (twelveHour === 0) {
                 twelveHour = 12;
             }
 
+
             const nextHour =
                 (hour + 1) % 24;
+
 
             const nextPeriod =
                 nextHour >= 12
                     ? "PM"
                     : "AM";
 
+
             let nextTwelveHour =
                 nextHour % 12;
+
 
             if (nextTwelveHour === 0) {
                 nextTwelveHour = 12;
             }
 
+
             let subject =
-                subjects.length > 0
-                    ? subjects[
-                        (currentDay + i) %
-                        subjects.length
-                    ]
-                    : "Study";
+                subjects[
+                    (
+                        currentDay + i
+                    ) % Math.max(subjects.length, 1)
+                ] || "Study";
+
 
             let topic = "";
+
 
             if (current && i === 0) {
 
@@ -832,13 +929,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
+
             const item =
                 document.createElement("div");
 
             item.className =
                 "schedule-item";
 
+
             item.innerHTML = `
+
                 <div>
                     <strong>
                         ${twelveHour}:00 ${period}
@@ -856,10 +956,14 @@ document.addEventListener("DOMContentLoaded", function () {
                             : ""
                     }
                 </div>
+
             `;
 
+
             todaySchedule.appendChild(item);
+
         }
+
     }
 
 
@@ -877,11 +981,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
+
         const year =
             calendarDate.getFullYear();
 
         const month =
             calendarDate.getMonth();
+
 
         const monthNames = [
             "January",
@@ -898,10 +1004,13 @@ document.addEventListener("DOMContentLoaded", function () {
             "December"
         ];
 
+
         calendarMonth.textContent =
             `${monthNames[month]} ${year}`;
 
+
         calendarDays.innerHTML = "";
+
 
         const firstDay =
             new Date(
@@ -910,6 +1019,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 1
             ).getDay();
 
+
         const daysInMonth =
             new Date(
                 year,
@@ -917,10 +1027,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 0
             ).getDate();
 
+
         const today =
             new Date();
 
+
         let completedDays = [];
+
 
         try {
 
@@ -937,8 +1050,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        // EMPTY CELLS
 
         for (
             let i = 0;
@@ -957,8 +1068,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
 
-        // DAYS
-
         for (
             let day = 1;
             day <= daysInMonth;
@@ -968,8 +1077,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const cell =
                 document.createElement("div");
 
+
             cell.className =
                 "calendar-day";
+
 
             const date =
                 new Date(
@@ -978,12 +1089,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     day
                 );
 
+
             const dateString =
                 date.toISOString()
                     .split("T")[0];
 
-
-            // TODAY
 
             if (
                 date.toDateString() ===
@@ -994,8 +1104,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
-
-            // EXAM DAY
 
             if (
                 examDate &&
@@ -1010,8 +1118,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // COMPLETED DAY
-
             if (
                 completedDays.includes(
                     dateString
@@ -1024,8 +1130,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
-
-            // STUDY DAY
 
             if (
                 exam &&
@@ -1040,11 +1144,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
+
             cell.textContent =
                 day;
 
+
             calendarDays.appendChild(cell);
+
         }
+
     }
 
 
@@ -1085,6 +1193,61 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ==========================================
+    // COMPLETED STUDY DAYS
+    // ==========================================
+
+    function markTodayAsStudied() {
+
+        const todayString =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
+
+        let completedDays = [];
+
+
+        try {
+
+            completedDays =
+                JSON.parse(
+                    localStorage.getItem(
+                        "completedStudyDays"
+                    ) || "[]"
+                );
+
+        } catch (error) {
+
+            completedDays = [];
+
+        }
+
+
+        if (
+            !completedDays.includes(
+                todayString
+            )
+        ) {
+
+            completedDays.push(
+                todayString
+            );
+
+        }
+
+
+        localStorage.setItem(
+            "completedStudyDays",
+            JSON.stringify(completedDays)
+        );
+
+
+        renderCalendar();
+
+    }
+
+
+    // ==========================================
     // AI STUDY COACH
     // ==========================================
 
@@ -1095,20 +1258,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 "dashboardAI"
             )
         ) {
+
             return;
+
         }
+
 
         const section =
             document.createElement("section");
 
+
         section.className =
             "panel-card dashboard-ai";
+
 
         section.id =
             "dashboardAI";
 
 
         section.innerHTML = `
+
             <h2>🤖 StudyMind AI Coach</h2>
 
             <p>
@@ -1149,6 +1318,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </button>
 
             </div>
+
         `;
 
 
@@ -1162,15 +1332,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 "analyzeStudyButton"
             );
 
+
         const askButton =
             document.getElementById(
                 "askAIButton"
             );
 
+
         const questionInput =
             document.getElementById(
                 "aiQuestion"
             );
+
 
         const responseBox =
             document.getElementById(
@@ -1179,16 +1352,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         // ==========================================
-        // SEND REQUEST TO BACKEND
+        // AI CONNECTION
         // ==========================================
 
-        async function askAI(prompt) {
+        async function askStudyMindAI(prompt) {
 
             try {
-
-                console.log(
-                    "Sending prompt to StudyMind AI..."
-                );
 
                 const response =
                     await fetch(
@@ -1201,9 +1370,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                     "application/json"
                             },
 
-                            body: JSON.stringify({
-                                prompt: prompt
-                            })
+                            body:
+                                JSON.stringify({
+                                    prompt: prompt
+                                })
                         }
                     );
 
@@ -1212,17 +1382,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     await response.json();
 
 
-                console.log(
-                    "AI server response:",
-                    data
-                );
-
-
                 if (!response.ok) {
 
                     throw new Error(
                         data.error ||
-                        `AI request failed (${response.status})`
+                        "AI request failed."
                     );
 
                 }
@@ -1231,7 +1395,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!data.answer) {
 
                     throw new Error(
-                        "The AI server returned no answer."
+                        "The AI returned no answer."
                     );
 
                 }
@@ -1239,16 +1403,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 return data.answer;
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(
-                    "StudyMind AI connection error:",
+                    "StudyMind AI Error:",
                     error
                 );
 
+
                 return `
                     <div class="ai-error">
-
                         <strong>
                             ⚠️ StudyMind AI couldn't respond.
                         </strong>
@@ -1256,46 +1422,65 @@ document.addEventListener("DOMContentLoaded", function () {
                         <p>
                             ${error.message}
                         </p>
-
                     </div>
                 `;
+
             }
+
         }
 
 
         // ==========================================
-        // BUILD STUDENT CONTEXT
+        // BUILD AI STUDY CONTEXT
         // ==========================================
 
-        function getAIStudyContext() {
+        function buildStudyContext() {
 
-            const current =
-                getCurrentTopicData();
+            const allTopics =
+                getAllTopics();
+
+
+            const completedCount =
+                progress.completedTopics.length;
+
 
             const totalTopics =
-                getAllTopics().length;
+                allTopics.length;
 
-            const completed =
-                progress.completedTopics.length;
 
             const progressPercentage =
                 totalTopics > 0
                     ? Math.round(
-                        (completed / totalTopics) * 100
+                        (
+                            completedCount /
+                            totalTopics
+                        ) * 100
                     )
                     : 0;
 
+
+            const current =
+                getCurrentTopicData();
+
+
             return `
-STUDYMIND AI STUDENT CONTEXT
+
+STUDENT STUDY CONTEXT
 
 Curriculum:
-${studyData.curriculum || "Not provided"}
+${studyData.curriculum || "Not specified"}
 
 Subjects:
-${subjects.join(", ") || "Not provided"}
+${subjects.length > 0
+    ? subjects.join(", ")
+    : "No subjects available"}
 
 Topics:
-${JSON.stringify(studyData.topics || {}, null, 2)}
+${JSON.stringify(
+    studyData.topics || {},
+    null,
+    2
+)}
 
 Topic difficulties:
 ${JSON.stringify(
@@ -1305,46 +1490,44 @@ ${JSON.stringify(
 )}
 
 Exam date:
-${studyData.examDate || "Not provided"}
+${studyData.examDate || "Not specified"}
 
 Days remaining:
-${studyData.daysLeft || "Not provided"}
+${studyData.daysLeft || 0}
 
-Hours per day:
-${studyData.hoursPerDay || "Not provided"}
+Hours available per day:
+${studyData.hoursPerDay || 0}
 
-Preferred start time:
-${studyData.startTime || "Not provided"}
+Study start time:
+${studyData.startTime || "Not specified"}
 
-Original study score:
+Study score:
 ${studyData.studyScore || 0}
 
-Current study score:
-${scoreDisplay ? scoreDisplay.textContent : studyData.studyScore || 0}
-
-Study streak:
+Current streak:
 ${studyData.streak || 0}
 
-Topics completed:
-${completed} of ${totalTopics}
+Completed topics:
+${completedCount}
 
-Overall progress:
+Total topics:
+${totalTopics}
+
+Overall topic progress:
 ${progressPercentage}%
 
 Current topic:
-${
-    current
-        ? `${current.subject} - ${current.topic}`
-        : "All topics completed"
-}
+${current
+    ? `${current.subject} - ${current.topic}`
+    : "No current topic"}
 
-Studied time by topic:
+Completed topic indexes:
 ${JSON.stringify(
-    progress.studiedSeconds || {},
-    null,
-    2
+    progress.completedTopics
 )}
+
             `;
+
         }
 
 
@@ -1362,49 +1545,58 @@ ${JSON.stringify(
                         "<p>🤖 StudyMind AI is analyzing your study plan...</p>";
 
 
-                    const context =
-                        getAIStudyContext();
-
-
                     const prompt = `
-You are StudyMind AI, a personal AI study coach.
 
-Your job is to analyze the student's actual study data
-and give useful, realistic academic guidance.
+You are StudyMind AI, an intelligent personal
+study coach.
+
+Your job is to help the student study more
+effectively based on their ACTUAL study data.
 
 IMPORTANT RULES:
 
-- Use the student's actual data.
-- Do not invent subjects, topics, dates, or scores.
-- Identify weak areas from the provided difficulty data.
-- Consider the amount of time available before the exam.
-- Give practical advice that the student can actually follow.
+- Use the student's study context below.
+- Do not invent subjects, topics, exam dates,
+  or other information.
+- Identify weak areas from the provided data.
+- Prioritize topics intelligently.
+- Give practical advice.
 - Keep the response clear and student-friendly.
-- Do not overwhelm the student with unnecessary information.
+- Do not overwhelm the student with unnecessary text.
 
-${context}
+${buildStudyContext()}
 
-Analyze the student's current study plan.
+Analyze the student's study plan.
 
-Give the student:
+Give the response using these sections:
 
-1. A short assessment of their preparation.
-2. Their most important weak areas.
-3. The topics they should prioritize.
-4. How they should use their available study time.
-5. Specific exam-preparation advice.
-6. One short motivational message.
+📊 Preparation Assessment
 
-Use headings and bullet points where useful.
-`;
+🔴 Weak Areas
+
+🎯 What To Study First
+
+⏱️ Time Management
+
+📚 Exam Strategy
+
+💡 One Final Tip
+
+Keep each section concise but useful.
+
+                    `;
 
 
                     const answer =
-                        await askAI(prompt);
+                        await askStudyMindAI(
+                            prompt
+                        );
 
 
                     responseBox.innerHTML =
-                        formatAIResponse(answer);
+                        formatAIResponse(
+                            answer
+                        );
 
                 }
             );
@@ -1413,7 +1605,7 @@ Use headings and bullet points where useful.
 
 
         // ==========================================
-        // ASK A QUESTION
+        // ASK AI QUESTION
         // ==========================================
 
         async function submitQuestion() {
@@ -1428,47 +1620,53 @@ Use headings and bullet points where useful.
                     "<p>Please enter a question first.</p>";
 
                 return;
+
             }
 
 
             responseBox.innerHTML =
-                "<p>🤖 Thinking...</p>";
-
-
-            const context =
-                getAIStudyContext();
+                "<p>🤖 StudyMind AI is thinking...</p>";
 
 
             const prompt = `
-You are StudyMind AI, the student's personal AI study coach.
 
-Use the student's study context below when it is relevant.
+You are StudyMind AI, the student's personal
+study coach.
 
-IMPORTANT RULES:
+Use the student's study context below to answer
+their question.
+
+IMPORTANT:
 
 - Answer the student's actual question directly.
-- Use the provided study data.
-- Do not invent information about their study plan.
-- If the question is unrelated to their study plan,
-  you can still answer it if it is educational and appropriate.
-- Keep explanations clear and student-friendly.
-- Give examples when they help.
+- Use their study data when relevant.
+- Do not invent information.
+- If their question is unrelated to studying,
+  still answer helpfully but keep the response
+  appropriate and educational.
+- Keep the explanation clear and practical.
 
-${context}
+${buildStudyContext()}
 
-STUDENT'S QUESTION:
-${question}
+STUDENT QUESTION:
 
-Answer the question clearly.
-`;
+"${question}"
+
+Give the best possible answer.
+
+            `;
 
 
             const answer =
-                await askAI(prompt);
+                await askStudyMindAI(
+                    prompt
+                );
 
 
             responseBox.innerHTML =
-                formatAIResponse(answer);
+                formatAIResponse(
+                    answer
+                );
 
         }
 
@@ -1489,7 +1687,9 @@ Answer the question clearly.
                 "keydown",
                 function (event) {
 
-                    if (event.key === "Enter") {
+                    if (
+                        event.key === "Enter"
+                    ) {
 
                         submitQuestion();
 
@@ -1522,13 +1722,24 @@ Answer the question clearly.
 
         const safeText =
             String(text)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                );
 
 
         return `
+
             <div class="ai-answer">
+
                 ${safeText
                     .replace(
                         /\n\n/g,
@@ -1538,8 +1749,11 @@ Answer the question clearly.
                         /\n/g,
                         "<br>"
                     )}
+
             </div>
+
         `;
+
     }
 
 
@@ -1550,13 +1764,19 @@ Answer the question clearly.
     function loadTheme() {
 
         const savedTheme =
-            localStorage.getItem("theme");
+            localStorage.getItem(
+                "theme"
+            );
 
-        if (savedTheme === "dark") {
+
+        if (
+            savedTheme === "dark"
+        ) {
 
             document.body.classList.add(
                 "dark-mode"
             );
+
 
             if (themeButton) {
 
@@ -1571,6 +1791,7 @@ Answer the question clearly.
                 "dark-mode"
             );
 
+
             if (themeButton) {
 
                 themeButton.textContent =
@@ -1579,6 +1800,7 @@ Answer the question clearly.
             }
 
         }
+
     }
 
 
@@ -1592,10 +1814,12 @@ Answer the question clearly.
                     "dark-mode"
                 );
 
+
                 const dark =
                     document.body.classList.contains(
                         "dark-mode"
                     );
+
 
                 localStorage.setItem(
                     "theme",
@@ -1603,6 +1827,7 @@ Answer the question clearly.
                         ? "dark"
                         : "light"
                 );
+
 
                 themeButton.textContent =
                     dark
@@ -1619,7 +1844,7 @@ Answer the question clearly.
     // INITIALIZE DASHBOARD
     // ==========================================
 
-    loadTheme();
+    renderStatistics();
 
     renderSubjects();
 
@@ -1634,4 +1859,3 @@ Answer the question clearly.
     createAISection();
 
 });
-
