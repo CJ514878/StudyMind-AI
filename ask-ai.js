@@ -6,36 +6,31 @@ async function askAI(prompt) {
 
     try {
 
-        console.log("Sending request to StudyMind AI...");
+        console.log("Sending prompt to StudyMind AI...");
+
+        const response = await fetch("/api", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                prompt: prompt
+            })
+
+        });
 
 
-        const response = await fetch(
-            "/api",
-            {
-
-                method: "POST",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/json"
-
-                },
-
-                body: JSON.stringify({
-
-                    prompt: prompt
-
-                })
-
-            }
-        );
+        // Try to read the response
+        const data = await response.json();
 
 
-        const data =
-            await response.json();
+        console.log("AI server response:", data);
 
 
+        // If the server returned an error
         if (!response.ok) {
 
             console.error(
@@ -45,40 +40,46 @@ async function askAI(prompt) {
 
             throw new Error(
                 data.error ||
-                "AI request failed."
+                `AI request failed (${response.status})`
             );
 
         }
 
 
+        // Make sure we actually received an answer
         if (!data.answer) {
 
             throw new Error(
-                "The AI returned no answer."
+                "The AI server returned no answer."
             );
 
         }
-
-
-        console.log(
-            "StudyMind AI connected successfully."
-        );
 
 
         return data.answer;
 
-    }
 
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
-            "StudyMind AI Error:",
+            "StudyMind AI connection error:",
             error
         );
 
 
-        return null;
+        return `
+            <div class="ai-error">
+
+                <strong>
+                    ⚠️ StudyMind AI couldn't respond.
+                </strong>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+        `;
 
     }
 
