@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const startButton = document.getElementById("startButton");
     const cta = document.getElementById("cta");
 
-    const generateButton = document.getElementById("generateButton");
+    const generateButton =
+        document.getElementById("generateButton");
+
     const generateDifficultyButton =
         document.getElementById("generateDifficultyButton");
 
@@ -68,12 +70,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         hour = hour % 24;
 
-        let period = hour >= 12 ? "PM" : "AM";
+        let period =
+            hour >= 12
+                ? "PM"
+                : "AM";
 
-        let displayHour = hour % 12;
+        let displayHour =
+            hour % 12;
 
         if (displayHour === 0) {
+
             displayHour = 12;
+
         }
 
         return `${displayHour}:00 ${period}`;
@@ -92,19 +100,25 @@ document.addEventListener("DOMContentLoaded", function () {
             function () {
 
                 if (!topicsInput || !difficultySection) {
+
                     return;
+
                 }
 
-                const topics = topicsInput.value.trim();
+                const topics =
+                    topicsInput.value.trim();
+
 
                 if (topics === "") {
 
                     difficultySection.innerHTML =
                         "<p>Please enter your subjects and topics first.</p>";
 
-                    difficultySection.style.display = "block";
+                    difficultySection.style.display =
+                        "block";
 
                     return;
+
                 }
 
 
@@ -114,22 +128,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 let topicData = {};
 
-                let topicLines = topics
-                    .split(/\r?\n/)
-                    .map(line => line.trim())
-                    .filter(line => line !== "");
+                let topicLines =
+                    topics
+                        .split(/\r?\n/)
+                        .map(line => line.trim())
+                        .filter(line => line !== "");
 
 
                 topicLines.forEach(function (line) {
 
-                    const parts = line.split(":");
+                    const parts =
+                        line.split(":");
+
 
                     if (parts.length < 2) {
+
                         return;
+
                     }
 
+
                     const subjectName =
-                        parts[0].trim().toLowerCase();
+                        parts[0]
+                            .trim()
+                            .toLowerCase();
+
 
                     const subjectTopics =
                         parts
@@ -139,7 +162,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             .map(topic => topic.trim())
                             .filter(topic => topic !== "");
 
-                    if (subjectName && subjectTopics.length > 0) {
+
+                    if (
+                        subjectName &&
+                        subjectTopics.length > 0
+                    ) {
 
                         topicData[subjectName] =
                             subjectTopics;
@@ -156,14 +183,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 difficultySection.innerHTML = "";
 
 
-                if (Object.keys(topicData).length === 0) {
+                if (
+                    Object.keys(topicData).length === 0
+                ) {
 
                     difficultySection.innerHTML =
                         "<p>Please use the format: Subject: Topic 1, Topic 2</p>";
 
-                    difficultySection.style.display = "block";
+                    difficultySection.style.display =
+                        "block";
 
                     return;
+
                 }
 
 
@@ -171,112 +202,145 @@ document.addEventListener("DOMContentLoaded", function () {
                 // CREATE DIFFICULTY SELECTORS
                 // ==========================================
 
-                Object.keys(topicData).forEach(function (subject) {
+                Object.keys(topicData).forEach(
+                    function (subject) {
 
-                    const subjectHeading =
-                        document.createElement("h2");
-
-                    subjectHeading.textContent = subject;
-
-                    difficultySection.appendChild(
-                        subjectHeading
-                    );
+                        const subjectHeading =
+                            document.createElement("h2");
 
 
-                    topicData[subject].forEach(function (topic) {
-
-                        const topicContainer =
-                            document.createElement("div");
-
-                        topicContainer.className =
-                            "difficulty-topic";
-
-
-                        const topicName =
-                            document.createElement("div");
-
-                        topicName.className =
-                            "topic-name";
-
-                        topicName.textContent =
-                            topic;
-
-
-                        const select =
-                            document.createElement("select");
-
-                        select.className =
-                            "difficulty-select";
-
-                        select.dataset.subject =
+                        subjectHeading.textContent =
                             subject;
-
-                        select.dataset.topic =
-                            topic;
-
-
-                        // Weak
-                        const weakOption =
-                            document.createElement("option");
-
-                        weakOption.value = "weak";
-
-                        weakOption.textContent =
-                            "🔴 Weak";
-
-
-                        // Medium
-                        const mediumOption =
-                            document.createElement("option");
-
-                        mediumOption.value = "medium";
-
-                        mediumOption.textContent =
-                            "🟡 Medium";
-
-
-                        // Strong
-                        const strongOption =
-                            document.createElement("option");
-
-                        strongOption.value = "strong";
-
-                        strongOption.textContent =
-                            "🟢 Strong";
-
-
-                        select.appendChild(weakOption);
-                        select.appendChild(mediumOption);
-                        select.appendChild(strongOption);
-
-
-                        // Default
-                        select.value = "medium";
-
-
-                        topicContainer.appendChild(
-                            topicName
-                        );
-
-                        topicContainer.appendChild(
-                            select
-                        );
 
 
                         difficultySection.appendChild(
-                            topicContainer
+                            subjectHeading
                         );
 
-                    });
 
-                });
+                        topicData[subject].forEach(
+                            function (topic) {
+
+                                const topicContainer =
+                                    document.createElement("div");
+
+
+                                topicContainer.className =
+                                    "difficulty-topic";
+
+
+                                const topicName =
+                                    document.createElement("div");
+
+
+                                topicName.className =
+                                    "topic-name";
+
+
+                                topicName.textContent =
+                                    topic;
+
+
+                                const select =
+                                    document.createElement("select");
+
+
+                                select.className =
+                                    "difficulty-select";
+
+
+                                select.dataset.subject =
+                                    subject;
+
+
+                                select.dataset.topic =
+                                    topic;
+
+
+                                // Weak
+                                const weakOption =
+                                    document.createElement("option");
+
+
+                                weakOption.value =
+                                    "weak";
+
+
+                                weakOption.textContent =
+                                    "🔴 Weak";
+
+
+                                // Medium
+                                const mediumOption =
+                                    document.createElement("option");
+
+
+                                mediumOption.value =
+                                    "medium";
+
+
+                                mediumOption.textContent =
+                                    "🟡 Medium";
+
+
+                                // Strong
+                                const strongOption =
+                                    document.createElement("option");
+
+
+                                strongOption.value =
+                                    "strong";
+
+
+                                strongOption.textContent =
+                                    "🟢 Strong";
+
+
+                                select.appendChild(
+                                    weakOption
+                                );
+
+
+                                select.appendChild(
+                                    mediumOption
+                                );
+
+
+                                select.appendChild(
+                                    strongOption
+                                );
+
+
+                                // Default
+                                select.value =
+                                    "medium";
+
+
+                                topicContainer.appendChild(
+                                    topicName
+                                );
+
+
+                                topicContainer.appendChild(
+                                    select
+                                );
+
+
+                                difficultySection.appendChild(
+                                    topicContainer
+                                );
+
+                            }
+                        );
+
+                    }
+                );
 
 
                 difficultySection.style.display =
                     "block";
 
 
-                // Save difficulty data
                 updateDifficultyData();
 
             }
@@ -293,6 +357,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.topicDifficulty = {};
 
+
         const selectors =
             document.querySelectorAll(
                 ".difficulty-select"
@@ -304,13 +369,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const subject =
                 select.dataset.subject;
 
+
             const topic =
                 select.dataset.topic;
 
 
-            if (!window.topicDifficulty[subject]) {
+            if (
+                !window.topicDifficulty[subject]
+            ) {
 
-                window.topicDifficulty[subject] = {};
+                window.topicDifficulty[subject] =
+                    {};
 
             }
 
@@ -331,34 +400,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
         generateButton.addEventListener(
             "click",
-            function () {
+            async function () {
 
                 // ==========================================
                 // GET INPUTS
                 // ==========================================
 
                 const curriculum =
-                    document.getElementById("curriculum")?.value || "";
+                    document.getElementById(
+                        "curriculum"
+                    )?.value || "";
+
 
                 const subjectsInput =
-                    document.getElementById("subjects")?.value || "";
+                    document.getElementById(
+                        "subjects"
+                    )?.value || "";
+
 
                 const topics =
-                    document.getElementById("topics")?.value || "";
+                    document.getElementById(
+                        "topics"
+                    )?.value || "";
+
 
                 const examDate =
-                    document.getElementById("examDate")?.value || "";
+                    document.getElementById(
+                        "examDate"
+                    )?.value || "";
+
 
                 const hoursPerDay =
                     Number(
-                        document.getElementById("hoursPerDay")?.value
+                        document.getElementById(
+                            "hoursPerDay"
+                        )?.value
                     );
 
+
                 const startTime =
-                    document.getElementById("startTime")?.value || "";
+                    document.getElementById(
+                        "startTime"
+                    )?.value || "";
+
 
                 const plan =
-                    document.getElementById("studyPlan");
+                    document.getElementById(
+                        "studyPlan"
+                    );
 
 
                 // ==========================================
@@ -376,7 +465,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                if (subjectsInput.trim() === "") {
+                if (
+                    subjectsInput.trim() === ""
+                ) {
 
                     alert(
                         "Please enter at least one subject."
@@ -398,9 +489,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                if (!hoursPerDay ||
+                if (
+                    !hoursPerDay ||
                     isNaN(hoursPerDay) ||
-                    hoursPerDay <= 0) {
+                    hoursPerDay <= 0
+                ) {
 
                     alert(
                         "Please enter the number of hours you can study each day."
@@ -447,7 +540,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         );
 
 
-                if (subjectList.length === 0) {
+                if (
+                    subjectList.length === 0
+                ) {
 
                     alert(
                         "Please enter at least one valid subject."
@@ -469,12 +564,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 const today =
                     new Date();
 
+
                 const exam =
                     new Date(examDate);
 
 
-                today.setHours(0, 0, 0, 0);
-                exam.setHours(0, 0, 0, 0);
+                today.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+
+                exam.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
 
 
                 if (exam < today) {
@@ -495,7 +603,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const daysLeft =
                     Math.ceil(
                         timeDifference /
-                        (1000 * 60 * 60 * 24)
+                        (
+                            1000 *
+                            60 *
+                            60 *
+                            24
+                        )
                     );
 
 
@@ -504,6 +617,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // ==========================================
 
                 let urgency = "";
+
 
                 if (daysLeft > 90) {
 
@@ -540,6 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 let topicData = {};
 
+
                 const topicLines =
                     topics
                         .split(/\r?\n/)
@@ -547,40 +662,46 @@ document.addEventListener("DOMContentLoaded", function () {
                         .filter(line => line !== "");
 
 
-                topicLines.forEach(function (line) {
+                topicLines.forEach(
+                    function (line) {
 
-                    const parts =
-                        line.split(":");
+                        const parts =
+                            line.split(":");
 
 
-                    if (parts.length < 2) {
-                        return;
+                        if (
+                            parts.length < 2
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const subjectName =
+                            parts[0]
+                                .trim()
+                                .toLowerCase();
+
+
+                        const subjectTopics =
+                            parts
+                                .slice(1)
+                                .join(":")
+                                .split(",")
+                                .map(topic =>
+                                    topic.trim()
+                                )
+                                .filter(topic =>
+                                    topic !== ""
+                                );
+
+
+                        topicData[subjectName] =
+                            subjectTopics;
+
                     }
-
-
-                    const subjectName =
-                        parts[0]
-                            .trim()
-                            .toLowerCase();
-
-
-                    const subjectTopics =
-                        parts
-                            .slice(1)
-                            .join(":")
-                            .split(",")
-                            .map(topic =>
-                                topic.trim()
-                            )
-                            .filter(topic =>
-                                topic !== ""
-                            );
-
-
-                    topicData[subjectName] =
-                        subjectTopics;
-
-                });
+                );
 
 
                 // ==========================================
@@ -588,6 +709,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // ==========================================
 
                 let topicDifficulty = {};
+
                 let topicPriority = {};
 
 
@@ -603,14 +725,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         const subject =
                             select.dataset.subject;
 
+
                         const topic =
                             select.dataset.topic;
 
 
-                        if (!topicDifficulty[subject]) {
+                        if (
+                            !topicDifficulty[subject]
+                        ) {
 
-                            topicDifficulty[subject] = {};
-                            topicPriority[subject] = {};
+                            topicDifficulty[subject] =
+                                {};
+
+                            topicPriority[subject] =
+                                {};
 
                         }
 
@@ -619,7 +747,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             select.value;
 
 
-                        if (select.value === "weak") {
+                        if (
+                            select.value === "weak"
+                        ) {
 
                             topicPriority[subject][topic] =
                                 3;
@@ -655,6 +785,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 const dayNames = [
+
                     "Sunday",
                     "Monday",
                     "Tuesday",
@@ -662,6 +793,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Thursday",
                     "Friday",
                     "Saturday"
+
                 ];
 
 
@@ -690,7 +822,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             topicPriority[subject];
 
 
-                        let weakestLevel = 2;
+                        let weakestLevel =
+                            2;
 
 
                         if (difficulties) {
@@ -701,10 +834,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                 );
 
 
-                            if (values.length > 0) {
+                            if (
+                                values.length > 0
+                            ) {
 
                                 weakestLevel =
-                                    Math.max(...values);
+                                    Math.max(
+                                        ...values
+                                    );
 
                             }
 
@@ -724,13 +861,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 let dailySchedule = "";
 
+
                 let usedSubjects = {};
 
 
                 subjectList.forEach(
                     function (subject) {
 
-                        usedSubjects[subject] = 0;
+                        usedSubjects[subject] =
+                            0;
 
                     }
                 );
@@ -742,7 +881,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     index++
                 ) {
 
-                    let bestSubject = null;
+                    let bestSubject =
+                        null;
+
 
                     let bestPriority =
                         -Infinity;
@@ -752,14 +893,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         function (subject) {
 
                             const priority =
-                                subjectPriority[subject] || 2;
+                                subjectPriority[
+                                    subject
+                                ] || 2;
 
 
                             const adjustedPriority =
                                 priority -
                                 (
-                                    usedSubjects[subject] *
-                                    1.5
+                                    usedSubjects[
+                                        subject
+                                    ] * 1.5
                                 );
 
 
@@ -772,6 +916,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 bestPriority =
                                     adjustedPriority;
 
+
                                 bestSubject =
                                     subject;
 
@@ -781,11 +926,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
 
 
-                    usedSubjects[bestSubject]++;
+                    usedSubjects[
+                        bestSubject
+                    ]++;
 
 
                     const start =
                         startHour + index;
+
 
                     const end =
                         start + 1;
@@ -835,6 +983,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const start =
                             startHour + h;
 
+
                         const end =
                             start + 1;
 
@@ -842,11 +991,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         const displayStart =
                             formatTime(start);
 
+
                         const displayEnd =
                             formatTime(end);
 
 
                         let row = [];
+
 
                         row.push(
                             `${displayStart} - ${displayEnd}`
@@ -871,7 +1022,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                 ];
 
 
-                            row.push(subject);
+                            row.push(
+                                subject
+                            );
 
 
                             timetable +=
@@ -880,7 +1033,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
 
-                        timetableData.push(row);
+                        timetableData.push(
+                            row
+                        );
 
 
                         timetable +=
@@ -893,10 +1048,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 else {
 
                     const activities = [
+
                         "Past Questions",
                         "Weak Topics",
                         "Timed Practice",
                         "Mistake Review"
+
                     ];
 
 
@@ -909,6 +1066,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const start =
                             startHour + h;
 
+
                         const end =
                             start + 1;
 
@@ -916,11 +1074,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         const displayStart =
                             formatTime(start);
 
+
                         const displayEnd =
                             formatTime(end);
 
 
                         let row = [];
+
 
                         row.push(
                             `${displayStart} - ${displayEnd}`
@@ -945,7 +1105,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                 ];
 
 
-                            row.push(activity);
+                            row.push(
+                                activity
+                            );
 
 
                             timetable +=
@@ -954,7 +1116,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
 
-                        timetableData.push(row);
+                        timetableData.push(
+                            row
+                        );
 
 
                         timetable +=
@@ -976,35 +1140,45 @@ document.addEventListener("DOMContentLoaded", function () {
                     "Revise consistently and practice questions regularly.";
 
 
-                if (curriculum === "WAEC") {
+                if (
+                    curriculum === "WAEC"
+                ) {
 
                     advice =
                         "Practice WAEC past questions at least three times every week.";
 
                 }
 
-                else if (curriculum === "JAMB") {
+                else if (
+                    curriculum === "JAMB"
+                ) {
 
                     advice =
                         "Practice CBT questions daily to improve your speed and accuracy.";
 
                 }
 
-                else if (curriculum === "NECO") {
+                else if (
+                    curriculum === "NECO"
+                ) {
 
                     advice =
                         "Combine your class notes with NECO past questions.";
 
                 }
 
-                else if (curriculum === "IGCSE") {
+                else if (
+                    curriculum === "IGCSE"
+                ) {
 
                     advice =
                         "Focus on understanding concepts and solving structured questions.";
 
                 }
 
-                else if (curriculum === "SAT") {
+                else if (
+                    curriculum === "SAT"
+                ) {
 
                     advice =
                         "Spend time on timed reading and math practice tests.";
@@ -1119,21 +1293,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
 
-                if (daysLeft <= 14) {
+                if (
+                    daysLeft <= 14
+                ) {
 
                     studyScore -= 15;
 
                 }
 
 
-                if (hoursPerDay >= 5) {
+                if (
+                    hoursPerDay >= 5
+                ) {
 
                     studyScore += 10;
 
                 }
 
 
-                if (daysLeft > 90) {
+                if (
+                    daysLeft > 90
+                ) {
 
                     studyScore += 5;
 
@@ -1172,7 +1352,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     new Date().toDateString();
 
 
-                if (lastVisit !== todayDate) {
+                if (
+                    lastVisit !== todayDate
+                ) {
 
                     streak++;
 
@@ -1231,7 +1413,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 // ==========================================
-                // DISPLAY STUDY PLAN
+                // AI STUDY ANALYSIS
+                // ==========================================
+
+                let aiAdvice =
+                    "🤖 StudyMind AI is analyzing your study plan...";
+
+
+                // ==========================================
+                // DISPLAY INITIAL PLAN
                 // ==========================================
 
                 plan.innerHTML = `
@@ -1239,47 +1429,108 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h2>Your Study Plan</h2>
 
 
+                    <div class="ai-analysis">
+
+                        <h3>🤖 StudyMind AI Analysis</h3>
+
+                        <div class="ai-analysis-content">
+
+                            ${aiAdvice}
+
+                        </div>
+
+                    </div>
+
+
                     <div class="dashboard">
 
                         <div class="card">
+
                             <h3>⌛</h3>
-                            <h2>${daysLeft}</h2>
-                            <p>Days Left</p>
+
+                            <h2>
+                                ${daysLeft}
+                            </h2>
+
+                            <p>
+                                Days Left
+                            </p>
+
                         </div>
 
 
                         <div class="card">
+
                             <h3>📚</h3>
-                            <h2>${numberOfSubjects}</h2>
-                            <p>Subjects</p>
+
+                            <h2>
+                                ${numberOfSubjects}
+                            </h2>
+
+                            <p>
+                                Subjects
+                            </p>
+
                         </div>
 
 
                         <div class="card">
+
                             <h3>⏰</h3>
-                            <h2>${hoursPerDay}</h2>
-                            <p>Hours / Day</p>
+
+                            <h2>
+                                ${hoursPerDay}
+                            </h2>
+
+                            <p>
+                                Hours / Day
+                            </p>
+
                         </div>
 
 
                         <div class="card">
+
                             <h3>🎯</h3>
-                            <h2>${todaySubject}</h2>
-                            <p>Today's Focus</p>
+
+                            <h2>
+                                ${todaySubject}
+                            </h2>
+
+                            <p>
+                                Today's Focus
+                            </p>
+
                         </div>
 
 
                         <div class="card">
+
                             <h3>🔥</h3>
-                            <h2>${streak}</h2>
-                            <p>Study Streak</p>
+
+                            <h2>
+                                ${streak}
+                            </h2>
+
+                            <p>
+                                Study Streak
+                            </p>
+
                         </div>
 
 
                         <div class="card">
+
                             <h3>⭐</h3>
-                            <h2>${studyScore}</h2>
-                            <p>Study Score</p>
+
+                            <h2>
+                                ${studyScore}
+                            </h2>
+
+                            <p>
+                                Study Score
+                            </p>
+
                         </div>
 
                     </div>
@@ -1291,11 +1542,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         ${
                             studyScore >= 90
+
                                 ? "🏆 Excellent! Your study plan is well balanced."
+
                                 : studyScore >= 75
+
                                 ? "⭐ Good! Keep following your schedule."
+
                                 : studyScore >= 60
+
                                 ? "⚠️ Fair. Consider increasing your study hours."
+
                                 : "❌ Your plan needs improvement. Reduce distractions and study more consistently."
                         }
 
@@ -1303,38 +1560,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                     <p>
-                        <strong>Curriculum:</strong>
+
+                        <strong>
+                            Curriculum:
+                        </strong>
+
                         ${curriculum}
+
                     </p>
 
 
                     <p>
-                        <strong>Subjects:</strong>
+
+                        <strong>
+                            Subjects:
+                        </strong>
+
                         ${subjectList.join(", ")}
+
                     </p>
 
 
-                    <p>${advice}</p>
+                    <p>
+                        ${advice}
+                    </p>
 
-                    <p>${urgency}</p>
+
+                    <p>
+                        ${urgency}
+                    </p>
 
 
-                    <h3>📌 Today's Mission</h3>
+                    <h3>
+                        📌 Today's Mission
+                    </h3>
+
 
                     <p>
 
                         Today is
-                        <strong>${todayName}</strong>.
+                        <strong>
+                            ${todayName}
+                        </strong>.
 
                         Your main focus is
-                        <strong>${todaySubject}</strong>.
+                        <strong>
+                            ${todaySubject}
+                        </strong>.
 
                         Complete every study session before taking a break.
 
                     </p>
 
 
-                    <h3>📅 Today's Schedule</h3>
+                    <h3>
+                        📅 Today's Schedule
+                    </h3>
+
 
                     <div class="dailySchedule">
 
@@ -1343,12 +1625,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
 
-                    <h3>📆 Weekly Timetable</h3>
+                    <h3>
+                        📆 Weekly Timetable
+                    </h3>
+
 
                     ${timetable}
 
 
-                    <h3>✅ Progress Tracker</h3>
+                    <h3>
+                        ✅ Progress Tracker
+                    </h3>
+
 
                     <div id="progressTracker">
 
@@ -1377,7 +1665,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
 
-                    <h3>📈 Progress</h3>
+                    <h3>
+                        📈 Progress
+                    </h3>
 
 
                     <div class="progressBarContainer">
@@ -1410,21 +1700,27 @@ document.addEventListener("DOMContentLoaded", function () {
                     </p>
 
 
-                    <h3>🏆 Achievements</h3>
+                    <h3>
+                        🏆 Achievements
+                    </h3>
 
 
                     <div class="badges">
 
                         ${
                             daysLeft <= 30
+
                                 ? '<div class="badge">🔥 Exam Warrior</div>'
+
                                 : ""
                         }
 
 
                         ${
                             numberOfSubjects >= 5
+
                                 ? '<div class="badge">📚 Multi-Subject Learner</div>'
+
                                 : ""
                         }
 
@@ -1438,21 +1734,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         ${
                             hoursPerDay >= 5
+
                                 ? '<div class="badge">⭐ Productivity Master</div>'
+
                                 : ""
                         }
 
                     </div>
 
 
-                    <h3>📊 Study Statistics</h3>
+                    <h3>
+                        📊 Study Statistics
+                    </h3>
 
 
                     <div class="stats">
 
                         <div class="stat-box">
 
-                            <h4>📚 Total Subjects</h4>
+                            <h4>
+                                📚 Total Subjects
+                            </h4>
 
                             <p>
                                 ${numberOfSubjects}
@@ -1463,7 +1765,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="stat-box">
 
-                            <h4>⏰ Weekly Hours</h4>
+                            <h4>
+                                ⏰ Weekly Hours
+                            </h4>
 
                             <p>
                                 ${hoursPerDay * 7}
@@ -1474,7 +1778,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="stat-box">
 
-                            <h4>📅 Days Left</h4>
+                            <h4>
+                                📅 Days Left
+                            </h4>
 
                             <p>
                                 ${daysLeft}
@@ -1485,7 +1791,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         <div class="stat-box">
 
-                            <h4>🔥 Daily Goal</h4>
+                            <h4>
+                                🔥 Daily Goal
+                            </h4>
 
                             <p>
                                 ${hoursPerDay} hrs
@@ -1496,7 +1804,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
 
-                    <h3>💡 Subject Recommendations</h3>
+                    <h3>
+                        💡 Subject Recommendations
+                    </h3>
 
 
                     <div class="recommendations">
@@ -1506,6 +1816,95 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
 
                 `;
+
+
+                // ==========================================
+                // ASK AI
+                // ==========================================
+
+                try {
+
+                    const aiPrompt = `
+
+You are StudyMind AI, a personal AI study coach.
+
+Analyze this student's study information.
+
+STUDENT DATA:
+
+${JSON.stringify(
+    studyData,
+    null,
+    2
+)}
+
+Give personalized and practical advice.
+
+Your response MUST include:
+
+1. Overall assessment
+2. Biggest priorities
+3. Weak subjects or topics to focus on
+4. How to use the available study hours
+5. What the student should do today
+6. One mistake or distraction the student should avoid
+
+Do not simply repeat the student's information.
+
+Actually analyze the data and give useful recommendations.
+
+Keep the response clear, concise and encouraging.
+
+`;
+
+
+                    const response =
+                        await askAI(
+                            aiPrompt
+                        );
+
+
+                    aiAdvice =
+                        response;
+
+
+                    const aiContent =
+                        plan.querySelector(
+                            ".ai-analysis-content"
+                        );
+
+
+                    if (aiContent) {
+
+                        aiContent.textContent =
+                            aiAdvice;
+
+                    }
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "StudyMind AI Error:",
+                        error
+                    );
+
+
+                    const aiContent =
+                        plan.querySelector(
+                            ".ai-analysis-content"
+                        );
+
+
+                    if (aiContent) {
+
+                        aiContent.textContent =
+                            "StudyMind AI couldn't generate an analysis right now. Your study plan is still available.";
+
+                    }
+
+                }
 
 
                 // ==========================================
@@ -1526,7 +1925,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     checks.forEach(
                         function (check) {
 
-                            if (check.checked) {
+                            if (
+                                check.checked
+                            ) {
 
                                 completed++;
 
@@ -1538,12 +1939,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const percent =
                         checks.length > 0
+
                             ? Math.round(
                                 (
                                     completed /
                                     checks.length
                                 ) * 100
                             )
+
                             : 0;
 
 
@@ -1604,7 +2007,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 // ==========================================
-                // RESET PROGRESS FOR NEW PLAN
+                // RESET PROGRESS
                 // ==========================================
 
                 localStorage.setItem(
@@ -1642,7 +2045,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 localStorage.setItem(
                     "studyData",
-                    JSON.stringify(studyData)
+                    JSON.stringify(
+                        studyData
+                    )
                 );
 
 
