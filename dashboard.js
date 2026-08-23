@@ -1387,6 +1387,112 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+```javascript
+    // ==========================================
+    // BUILD LIVE AI STUDY CONTEXT
+    // ==========================================
+
+    function getAIStudyContext() {
+
+        const allTopics = getAllTopics();
+
+        const current = getCurrentTopicData();
+
+        const totalTopics = allTopics.length;
+
+        const completed =
+            progress.completedTopics.length;
+
+        const progressPercent =
+            totalTopics > 0
+                ? Math.round(
+                    (completed / totalTopics) * 100
+                )
+                : 0;
+
+        const liveScore =
+            totalTopics > 0
+                ? Math.min(
+                    100,
+                    baseScore +
+                    Math.round(
+                        (completed / totalTopics) * 20
+                    )
+                )
+                : baseScore;
+
+        const currentTopicTime =
+            current
+                ? (
+                    progress.studiedSeconds[
+                        String(current.index)
+                    ] || 0
+                )
+                : 0;
+
+        const currentTopicMinutes =
+            Math.floor(
+                currentTopicTime / 60
+            );
+
+        return {
+
+            curriculum:
+                studyData.curriculum || "Not specified",
+
+            subjects:
+                subjects,
+
+            topics:
+                studyData.topics || {},
+
+            topicDifficulties:
+                studyData.topicDifficulty || {},
+
+            examDate:
+                examDate || "Not specified",
+
+            daysLeft:
+                studyData.daysLeft || 0,
+
+            hoursPerDay:
+                hoursPerDay,
+
+            totalTopics:
+                totalTopics,
+
+            completedTopics:
+                completed,
+
+            progressPercent:
+                progressPercent,
+
+            currentSubject:
+                current
+                    ? current.subject
+                    : "All topics completed",
+
+            currentTopic:
+                current
+                    ? current.topic
+                    : "All topics completed",
+
+            currentTopicMinutes:
+                currentTopicMinutes,
+
+            liveStudyScore:
+                liveScore,
+
+            streak:
+                studyData.streak || 0,
+
+            startTime:
+                studyData.startTime || "16:00"
+
+        };
+
+    }
+```
 
     // ==========================================
     // AI STUDY COACH
