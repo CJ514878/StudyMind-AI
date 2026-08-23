@@ -1595,7 +1595,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
 
-        async function askAI(prompt) {
+       
 
             try {
 
