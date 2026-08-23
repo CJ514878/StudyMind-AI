@@ -4197,3 +4197,263 @@ body.dark-mode .difficulty-select {
     }
 
 }
+/* ==========================================
+   AI STUDY COACH
+========================================== */
+
+.dashboard-ai {
+    position: relative;
+    overflow: hidden;
+}
+
+/* AI Header */
+
+.dashboard-ai h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.dashboard-ai > p {
+    color: #64748b;
+    margin-bottom: 22px;
+}
+
+
+/* AI Buttons Container */
+
+.dashboard-ai-buttons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+
+/* Main AI Buttons */
+
+.ai-button {
+    border: none;
+    border-radius: 12px;
+
+    padding: 13px 20px;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+
+    min-height: 46px;
+}
+
+
+/* Analyze Button */
+
+#analyzeStudyButton {
+    background: #2563eb;
+    color: white;
+
+    box-shadow:
+        0 6px 16px rgba(37, 99, 235, 0.20);
+}
+
+#analyzeStudyButton:hover {
+    background: #1d4ed8;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 22px rgba(37, 99, 235, 0.28);
+}
+
+
+/* Ask AI Button */
+
+#askAIButton {
+    background: #0f172a;
+    color: white;
+
+    box-shadow:
+        0 6px 16px rgba(15, 23, 42, 0.18);
+}
+
+#askAIButton:hover {
+    background: #1e293b;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 22px rgba(15, 23, 42, 0.25);
+}
+
+
+/* Button Press */
+
+.ai-button:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================================
+   AI QUESTION BOX
+========================================== */
+
+.ai-question-box {
+    display: flex;
+    gap: 12px;
+
+    margin-top: 10px;
+}
+
+#aiQuestion {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 46px;
+
+    padding: 0 15px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    background: #f8fafc;
+
+    color: #0f172a;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+#aiQuestion:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+
+    background: white;
+}
+
+#aiQuestion::placeholder {
+    color: #94a3b8;
+}
+
+
+/* ==========================================
+   AI RESPONSE
+========================================== */
+
+.ai-response {
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    line-height: 1.7;
+
+    color: #334155;
+
+    min-height: 50px;
+}
+
+.ai-answer {
+    line-height: 1.7;
+}
+
+.ai-answer p {
+    margin: 0 0 12px;
+}
+
+
+/* ==========================================
+   DARK MODE
+========================================== */
+
+body.dark-mode .dashboard-ai > p {
+    color: #94a3b8;
+}
+
+body.dark-mode #askAIButton {
+    background: #1e293b;
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-mode #askAIButton:hover {
+    background: #334155;
+}
+
+body.dark-mode #aiQuestion {
+    background: #0f172a;
+
+    border-color: #334155;
+
+    color: #f8fafc;
+}
+
+body.dark-mode #aiQuestion:focus {
+    background: #111827;
+
+    border-color: #3b82f6;
+}
+
+body.dark-mode #aiQuestion::placeholder {
+    color: #64748b;
+}
+
+body.dark-mode .ai-response {
+    background: #0f172a;
+
+    border-color: #334155;
+
+    color: #cbd5e1;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+    .dashboard-ai-buttons {
+        flex-direction: column;
+    }
+
+    .ai-button {
+        width: 100%;
+    }
+
+    .ai-question-box {
+        flex-direction: column;
+    }
+
+    #aiQuestion {
+        width: 100%;
+    }
+
+}
