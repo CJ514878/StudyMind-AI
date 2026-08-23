@@ -1,3 +1,4 @@
+```js
 module.exports = async function handler(req, res) {
 
     // Only allow POST requests
@@ -19,21 +20,17 @@ module.exports = async function handler(req, res) {
             });
         }
 
-
         // Get prompt from request
         const { prompt } = req.body || {};
-
 
         if (!prompt || typeof prompt !== "string") {
 
             return res.status(400).json({
                 error: "No valid prompt provided."
             });
-
         }
 
-
-        // Call OpenAI
+        // Call OpenAI Responses API
         const openAIResponse = await fetch(
             "https://api.openai.com/v1/responses",
             {
@@ -58,11 +55,10 @@ module.exports = async function handler(req, res) {
             }
         );
 
+        // Read OpenAI response
+        const data = await openAIResponse.json();
 
-        // Get OpenAI response
-        const data =
-            await openAIResponse.json();
-
+        console.log("OpenAI response status:", openAIResponse.status);
 
         // Handle OpenAI errors
         if (!openAIResponse.ok) {
@@ -81,37 +77,65 @@ module.exports = async function handler(req, res) {
                     "OpenAI API request failed."
 
             });
+        }
+
+        // Extract the assistant's text response
+        let answer = "";
+
+        if (data.output && Array.isArray(data.output)) {
+
+            for (const item of data.output) {
+
+                if (
+                    item.type === "message" &&
+                    Array.isArray(item.content)
+                ) {
+
+                    for (const content of item.content) {
+
+                        if (
+                            content.type === "output_text" &&
+                            typeof content.text === "string"
+                        ) {
+
+                            answer += content.text;
+
+                        }
+
+                    }
+
+                }
+
+            }
 
         }
 
+        // Fallback in case output_text exists directly
+        if (!answer && typeof data.output_text === "string") {
+            answer = data.output_text;
+        }
 
-        // Get generated text
-        const answer =
-            data.output_text;
-
-
-        if (!answer) {
+        // Make sure we actually received text
+        if (!answer.trim()) {
 
             console.error(
-                "No output_text returned:",
+                "No text could be extracted from OpenAI response:",
                 data
             );
 
             return res.status(500).json({
                 error:
-                    "OpenAI returned an empty response."
+                    "OpenAI returned a response, but no text could be extracted."
             });
 
         }
 
-
         // Send answer back to browser
         return res.status(200).json({
 
-            answer: answer
+            answer: answer.trim()
 
         });
-
 
     } catch (error) {
 
@@ -131,3 +155,4 @@ module.exports = async function handler(req, res) {
     }
 
 };
+```
