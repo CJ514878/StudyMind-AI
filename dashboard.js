@@ -1286,17 +1286,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 topics, or exam.
             </p>
 
-            <button
-                id="analyzeStudyButton"
-                class="ai-button"
-            >
-                🤖 Analyze My Study Plan
-            </button>
+           <div class="dashboard-ai-buttons">
 
-            <div
-                id="aiResponse"
-                class="ai-response"
-            >
+    <button
+        id="analyzeStudyButton"
+        class="ai-button"
+    >
+        🤖 Analyze My Study Plan
+    </button>
+
+</div>
+
+<div
+    id="aiResponse"
+    class="ai-response"
+>
                 <p>
                     Your AI analysis will appear here.
                 </p>
