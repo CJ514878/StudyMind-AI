@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudyMind AI</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body.welcome-page {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        .welcome-content {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-title {
+            margin: 0;
+            font-size: 100px;
+            line-height: 0.9;
+            font-weight: 900;
+            letter-spacing: -5px;
+            color: white;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .welcome-title span {
+            color: #2563eb;
+        }
+
+        .welcome-content p {
+            max-width: 650px;
+            margin: 30px 0;
+            font-size: 20px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        .welcome-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+
+            padding: 17px 36px;
+
+            background: #22c55e;
+            color: white;
+
+            border-radius: 14px;
+
+            font-size: 19px;
+            font-weight: 700;
+
+            text-decoration: none;
+
+            transition: 0.25s ease;
+        }
+
+        .welcome-button:hover {
+            transform: translateY(-4px);
+            background: #16a34a;
+        }
+
+        .welcome-button span {
+            font-size: 24px;
+            transition: 0.25s ease;
+        }
+
+        .welcome-button:hover span {
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 600px) {
+
+            .welcome-title {
+                font-size: 55px;
+                letter-spacing: -3px;
+            }
+
+            .welcome-content p {
+                font-size: 17px;
+                padding: 0 20px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body class="welcome-page">
+
+    <div class="welcome-content">
+
+        <h1 class="welcome-title">
+            StudyMind <span>AI</span>
+        </h1>
+
+        <p>
+            Your personal AI-powered study assistant.
+            Create personalized study plans, prepare for exams,
+            track your progress, and study with confidence.
+        </p>
+
+        <a href="index.html" class="welcome-button">
+            Get Started
+            <span>→</span>
+        </a>
+
+    </div>
+
+</body>
+
+</html>
