@@ -1,2246 +1,1037 @@
-// ==========================================
-// STUDYMIND AI - MAIN SCRIPT
-// ==========================================
+/* =========================================
+   STUDYMIND AI — MAIN SCRIPT
+   ========================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+/* ---------- ELEMENTS ---------- */
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+const startButton = document.getElementById("startButton");
+const generateButton = document.getElementById("generateButton");
+const clearButton = document.getElementById("clearButton");
+const downloadButton = document.getElementById("downloadButton");
 
-    const welcomePage =
-        document.getElementById("welcomePage");
+const studyPlan = document.getElementById("studyPlan");
+const timetable = document.getElementById("timetable");
 
-    const welcomeButton =
-        document.querySelector(".welcome-button");
+const themeToggle = document.getElementById("themeToggle");
 
-    const startButton =
-        document.getElementById("startButton");
+const curriculumSelect = document.getElementById("curriculum");
+const difficultySelect = document.getElementById("difficulty");
+const studyTimeInput = document.getElementById("studyTime");
+const examDateInput = document.getElementById("examDate");
 
-    const cta =
-        document.getElementById("cta");
+const progressPercent = document.getElementById("progressPercent");
+const progressValue = document.querySelector(".progressValue");
 
-    const generateButton =
-        document.getElementById("generateButton");
-
-    const generateDifficultyButton =
-        document.getElementById("generateDifficultyButton");
-
-    const difficultySection =
-        document.getElementById("difficultySection");
-
-    const topicsInput =
-        document.getElementById("topics");
-
-    const themeButton =
-        document.getElementById("themeButton");
+const navLinks = document.querySelectorAll(".nav-links a");
+const subjectCheckboxes = document.querySelectorAll(
+    'input[name="subject"]'
+);
 
 
-    // ==========================================
-    // WELCOME PAGE
-    // ==========================================
+/* ---------- START BUTTON ---------- */
 
-    if (welcomeButton && welcomePage) {
+if (startButton) {
+    startButton.addEventListener("click", () => {
 
-        welcomeButton.addEventListener(
-            "click",
-            function () {
+        const plannerSection =
+            document.getElementById("planner");
 
-                welcomePage.classList.add(
-                    "welcome-hidden"
-                );
-
-            }
-        );
-
-    }
+        if (plannerSection) {
+            plannerSection.scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+    });
+}
 
 
-    // ==========================================
-    // START BUTTON
-    // ==========================================
+/* ---------- NAVIGATION ---------- */
 
-    if (startButton && cta) {
+navLinks.forEach(link => {
 
-        startButton.addEventListener(
-            "click",
-            function () {
+    link.addEventListener("click", event => {
 
-                cta.scrollIntoView({
+        const target = link.getAttribute("href");
+
+        if (target && target.startsWith("#")) {
+
+            const section =
+                document.querySelector(target);
+
+            if (section) {
+
+                event.preventDefault();
+
+                section.scrollIntoView({
                     behavior: "smooth"
                 });
-
             }
-        );
+        }
+    });
+});
 
-    }
+
+/* ---------- SUBJECT SELECTION ---------- */
+
+subjectCheckboxes.forEach(checkbox => {
+
+    checkbox.addEventListener("change", () => {
+
+        updateSubjectCounter();
+
+    });
+
+});
 
 
-    // ==========================================
-    // FORMAT TIME
-    // ==========================================
+function getSelectedSubjects() {
 
-    function formatTime(hour) {
+    const selected = [];
 
-        hour = hour % 24;
+    subjectCheckboxes.forEach(checkbox => {
 
-        let period =
-            hour >= 12
-                ? "PM"
-                : "AM";
-
-        let displayHour =
-            hour % 12;
-
-        if (displayHour === 0) {
-
-            displayHour = 12;
-
+        if (checkbox.checked) {
+            selected.push(checkbox.value);
         }
 
-        return `${displayHour}:00 ${period}`;
+    });
+
+    return selected;
+}
+
+
+function updateSubjectCounter() {
+
+    const selectedSubjects =
+        getSelectedSubjects();
+
+    const counter =
+        document.getElementById("subjectCounter");
+
+    if (counter) {
+
+        counter.textContent =
+            `${selectedSubjects.length} subject${
+                selectedSubjects.length === 1 ? "" : "s"
+            } selected`;
 
     }
+}
 
 
-    // ==========================================
-    // PARSE TOPICS
-    // ==========================================
+/* ---------- GENERATE STUDY PLAN ---------- */
 
-    function parseTopics(topicsText) {
+if (generateButton) {
 
-        let topicData = {};
+    generateButton.addEventListener("click", () => {
 
-        const topicLines =
-            topicsText
-                .split(/\r?\n/)
-                .map(line => line.trim())
-                .filter(line => line !== "");
+        generateStudyPlan();
 
+    });
 
-        topicLines.forEach(function (line) {
+}
 
-            const parts =
-                line.split(":");
 
+function generateStudyPlan() {
 
-            if (parts.length < 2) {
+    const subjects =
+        getSelectedSubjects();
 
-                return;
+    const curriculum =
+        curriculumSelect
+            ? curriculumSelect.value
+            : "School Based Tests";
 
-            }
+    const difficulty =
+        difficultySelect
+            ? difficultySelect.value
+            : "Medium";
 
+    const studyTime =
+        studyTimeInput
+            ? Number(studyTimeInput.value)
+            : 2;
 
-            const subjectName =
-                parts[0]
-                    .trim()
-                    .toLowerCase();
+    const examDate =
+        examDateInput
+            ? examDateInput.value
+            : "";
 
 
-            const subjectTopics =
-                parts
-                    .slice(1)
-                    .join(":")
-                    .split(",")
-                    .map(topic =>
-                        topic.trim()
-                    )
-                    .filter(topic =>
-                        topic !== ""
-                    );
+    /* ---------- VALIDATION ---------- */
 
+    if (subjects.length === 0) {
 
-            if (
-                subjectName &&
-                subjectTopics.length > 0
-            ) {
-
-                topicData[subjectName] =
-                    subjectTopics;
-
-            }
-
-        });
-
-
-        return topicData;
-
-    }
-
-
-    // ==========================================
-    // TOPIC DIFFICULTY GENERATOR
-    // ==========================================
-
-    if (generateDifficultyButton) {
-
-        generateDifficultyButton.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    !topicsInput ||
-                    !difficultySection
-                ) {
-
-                    return;
-
-                }
-
-
-                const topics =
-                    topicsInput.value.trim();
-
-
-                if (topics === "") {
-
-                    difficultySection.innerHTML =
-                        "<p>Please enter your subjects and topics first.</p>";
-
-                    difficultySection.style.display =
-                        "block";
-
-                    return;
-
-                }
-
-
-                // ==========================================
-                // PARSE TOPICS
-                // ==========================================
-
-                const topicData =
-                    parseTopics(topics);
-
-
-                // ==========================================
-                // CLEAR OLD DIFFICULTY SETTINGS
-                // ==========================================
-
-                difficultySection.innerHTML =
-                    "";
-
-
-                if (
-                    Object.keys(topicData).length === 0
-                ) {
-
-                    difficultySection.innerHTML =
-                        "<p>Please use the format: Subject: Topic 1, Topic 2</p>";
-
-                    difficultySection.style.display =
-                        "block";
-
-                    return;
-
-                }
-
-
-                // ==========================================
-                // CREATE DIFFICULTY SELECTORS
-                // ==========================================
-
-                Object.keys(topicData).forEach(
-                    function (subject) {
-
-                        const subjectHeading =
-                            document.createElement("h2");
-
-
-                        subjectHeading.textContent =
-                            subject;
-
-
-                        difficultySection.appendChild(
-                            subjectHeading
-                        );
-
-
-                        topicData[subject].forEach(
-                            function (topic) {
-
-                                const topicContainer =
-                                    document.createElement(
-                                        "div"
-                                    );
-
-
-                                topicContainer.className =
-                                    "difficulty-topic";
-
-
-                                const topicName =
-                                    document.createElement(
-                                        "div"
-                                    );
-
-
-                                topicName.className =
-                                    "topic-name";
-
-
-                                topicName.textContent =
-                                    topic;
-
-
-                                const select =
-                                    document.createElement(
-                                        "select"
-                                    );
-
-
-                                select.className =
-                                    "difficulty-select";
-
-
-                                select.dataset.subject =
-                                    subject;
-
-
-                                select.dataset.topic =
-                                    topic;
-
-
-                                // ==========================================
-                                // WEAK
-                                // ==========================================
-
-                                const weakOption =
-                                    document.createElement(
-                                        "option"
-                                    );
-
-
-                                weakOption.value =
-                                    "weak";
-
-
-                                weakOption.textContent =
-                                    "🔴 Weak";
-
-
-                                // ==========================================
-                                // MEDIUM
-                                // ==========================================
-
-                                const mediumOption =
-                                    document.createElement(
-                                        "option"
-                                    );
-
-
-                                mediumOption.value =
-                                    "medium";
-
-
-                                mediumOption.textContent =
-                                    "🟡 Medium";
-
-
-                                // ==========================================
-                                // STRONG
-                                // ==========================================
-
-                                const strongOption =
-                                    document.createElement(
-                                        "option"
-                                    );
-
-
-                                strongOption.value =
-                                    "strong";
-
-
-                                strongOption.textContent =
-                                    "🟢 Strong";
-
-
-                                select.appendChild(
-                                    weakOption
-                                );
-
-
-                                select.appendChild(
-                                    mediumOption
-                                );
-
-
-                                select.appendChild(
-                                    strongOption
-                                );
-
-
-                                // ==========================================
-                                // DEFAULT
-                                // ==========================================
-
-                                select.value =
-                                    "medium";
-
-
-                                topicContainer.appendChild(
-                                    topicName
-                                );
-
-
-                                topicContainer.appendChild(
-                                    select
-                                );
-
-
-                                difficultySection.appendChild(
-                                    topicContainer
-                                );
-
-                            }
-                        );
-
-                    }
-                );
-
-
-                difficultySection.style.display =
-                    "block";
-
-
-                updateDifficultyData();
-
-            }
+        alert(
+            "Please select at least one subject before generating your study plan."
         );
 
+        return;
     }
 
 
-    // ==========================================
-    // UPDATE DIFFICULTY DATA
-    // ==========================================
+    if (!studyTime || studyTime <= 0) {
 
-    function updateDifficultyData() {
+        alert(
+            "Please enter a valid amount of study time."
+        );
 
-        window.topicDifficulty = {};
+        return;
+    }
 
 
-        const selectors =
-            document.querySelectorAll(
-                ".difficulty-select"
+    /* ---------- CALCULATE DAILY TIME ---------- */
+
+    let dailyRecommendation;
+
+    if (subjects.length === 1) {
+
+        dailyRecommendation =
+            Math.min(studyTime, 2);
+
+    } else if (subjects.length <= 3) {
+
+        dailyRecommendation =
+            Math.min(studyTime, 3);
+
+    } else if (subjects.length <= 6) {
+
+        dailyRecommendation =
+            Math.min(studyTime, 4);
+
+    } else {
+
+        dailyRecommendation =
+            Math.min(studyTime, 6);
+
+    }
+
+
+    /* ---------- EXAM COUNTDOWN ---------- */
+
+    let countdownText =
+        "No exam date selected.";
+
+    if (examDate) {
+
+        const today =
+            new Date();
+
+        const exam =
+            new Date(examDate);
+
+        const difference =
+            exam - today;
+
+        const days =
+            Math.ceil(
+                difference /
+                (1000 * 60 * 60 * 24)
+            );
+
+        if (days > 0) {
+
+            countdownText =
+                `${days} day${days === 1 ? "" : "s"} remaining until your exam.`;
+
+        } else if (days === 0) {
+
+            countdownText =
+                "Your exam is today.";
+
+        } else {
+
+            countdownText =
+                "The selected exam date has passed.";
+
+        }
+    }
+
+
+    /* ---------- CREATE PLAN ---------- */
+
+    const plan = createStudyPlan(
+        subjects,
+        difficulty,
+        curriculum
+    );
+
+
+    /* ---------- DISPLAY ---------- */
+
+    if (studyPlan) {
+
+        studyPlan.innerHTML = `
+
+            <div class="plan-header">
+
+                <div>
+                    <span class="plan-label">
+                        YOUR PERSONALIZED PLAN
+                    </span>
+
+                    <h2>
+                        ${subjects.length}-Subject Study Plan
+                    </h2>
+                </div>
+
+                <div class="plan-status">
+                    Ready
+                </div>
+
+            </div>
+
+
+            <div class="plan-summary">
+
+                <div class="summary-item">
+                    <span>Curriculum</span>
+                    <strong>${curriculum}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Difficulty</span>
+                    <strong>${difficulty}</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Daily Study Time</span>
+                    <strong>${dailyRecommendation} hr</strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>Subjects</span>
+                    <strong>${subjects.length}</strong>
+                </div>
+
+            </div>
+
+
+            <div class="exam-countdown">
+
+                <span>📅</span>
+
+                <p>
+                    ${countdownText}
+                </p>
+
+            </div>
+
+
+            <div class="plan-subjects">
+
+                <h3>
+                    Subject Breakdown
+                </h3>
+
+                ${plan}
+
+            </div>
+
+
+            <div class="plan-tips">
+
+                <h3>
+                    Study Strategy
+                </h3>
+
+                <ul>
+
+                    <li>
+                        Start with your weakest subject while your concentration is highest.
+                    </li>
+
+                    <li>
+                        Use active recall instead of simply rereading notes.
+                    </li>
+
+                    <li>
+                        Practice questions should become more difficult as you improve.
+                    </li>
+
+                    <li>
+                        Take short breaks between focused study sessions.
+                    </li>
+
+                    <li>
+                        Review previously studied topics regularly.
+                    </li>
+
+                </ul>
+
+            </div>
+
+        `;
+
+        studyPlan.style.display = "block";
+
+    }
+
+
+    /* ---------- GENERATE TIMETABLE ---------- */
+
+    generateTimetable(subjects);
+
+
+    /* ---------- SAVE DATA ---------- */
+
+    saveStudyData({
+        subjects,
+        curriculum,
+        difficulty,
+        studyTime,
+        examDate
+    });
+
+
+    /* ---------- SCROLL TO RESULT ---------- */
+
+    if (studyPlan) {
+
+        setTimeout(() => {
+
+            studyPlan.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 200);
+
+    }
+
+}
+
+
+/* ---------- CREATE STUDY PLAN ---------- */
+
+function createStudyPlan(
+    subjects,
+    difficulty,
+    curriculum
+) {
+
+    const difficultyText = {
+
+        Easy:
+            "Focus on understanding the fundamentals and building confidence.",
+
+        Medium:
+            "Balance understanding, revision and practice questions.",
+
+        Hard:
+            "Prioritize challenging topics, timed practice and exam-style questions."
+
+    };
+
+
+    return subjects.map((subject, index) => {
+
+        const percentage =
+            Math.max(
+                20,
+                100 - (index * 8)
             );
 
 
-        selectors.forEach(
-            function (select) {
+        return `
 
-                const subject =
-                    select.dataset.subject;
+            <div class="subject-plan-card">
+
+                <div class="subject-plan-top">
+
+                    <div>
+
+                        <span class="subject-number">
+                            ${index + 1}
+                        </span>
+
+                        <h4>
+                            ${subject}
+                        </h4>
+
+                    </div>
+
+                    <span class="subject-priority">
+                        ${index < 2 ? "High Priority" : "Priority"}
+                    </span>
+
+                </div>
 
 
-                const topic =
-                    select.dataset.topic;
+                <div class="subject-progress">
+
+                    <div class="subject-progress-bar">
+
+                        <span
+                            style="width: ${percentage}%"
+                        ></span>
+
+                    </div>
+
+                </div>
 
 
-                if (
-                    !window.topicDifficulty[subject]
-                ) {
-
-                    window.topicDifficulty[subject] =
-                        {};
-
-                }
+                <p>
+                    ${difficultyText[difficulty] ||
+                    difficultyText.Medium}
+                </p>
 
 
-                window.topicDifficulty[subject][topic] =
-                    select.value;
+                <div class="study-actions">
 
+                    <span>
+                        📖 Review notes
+                    </span>
+
+                    <span>
+                        🧠 Active recall
+                    </span>
+
+                    <span>
+                        ✏️ Practice questions
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }).join("");
+
+}
+
+
+/* ---------- TIMETABLE ---------- */
+
+function generateTimetable(subjects) {
+
+    if (!timetable) {
+        return;
+    }
+
+
+    const days = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+    ];
+
+
+    const sessions = [];
+
+
+    days.forEach((day, dayIndex) => {
+
+        const subject =
+            subjects[
+                dayIndex %
+                subjects.length
+            ];
+
+
+        const secondSubject =
+            subjects[
+                (dayIndex + 1) %
+                subjects.length
+            ];
+
+
+        sessions.push({
+
+            day,
+
+            morning:
+                subject,
+
+            afternoon:
+                secondSubject,
+
+            evening:
+                subjects[
+                    (dayIndex + 2) %
+                    subjects.length
+                ]
+
+        });
+
+    });
+
+
+    timetable.innerHTML = `
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Day
+                        </th>
+
+                        <th>
+                            Morning
+                        </th>
+
+                        <th>
+                            Afternoon
+                        </th>
+
+                        <th>
+                            Evening
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${sessions.map(session => `
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    ${session.day}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${session.morning}
+                            </td>
+
+                            <td>
+                                ${session.afternoon}
+                            </td>
+
+                            <td>
+                                ${session.evening}
+                            </td>
+
+                        </tr>
+
+                    `).join("")}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+
+    timetable.style.display = "block";
+
+}
+
+
+/* ---------- CLEAR BUTTON ---------- */
+
+if (clearButton) {
+
+    clearButton.addEventListener("click", () => {
+
+        subjectCheckboxes.forEach(
+            checkbox => {
+                checkbox.checked = false;
             }
         );
+
+
+        if (studyPlan) {
+            studyPlan.innerHTML = "";
+            studyPlan.style.display = "none";
+        }
+
+
+        if (timetable) {
+            timetable.innerHTML = "";
+            timetable.style.display = "none";
+        }
+
+
+        updateSubjectCounter();
+
+
+        localStorage.removeItem(
+            "studyMindData"
+        );
+
+    });
+
+}
+
+
+/* ---------- DOWNLOAD STUDY PLAN ---------- */
+
+if (downloadButton) {
+
+    downloadButton.addEventListener("click", () => {
+
+        downloadStudyPlan();
+
+    });
+
+}
+
+
+function downloadStudyPlan() {
+
+    if (!studyPlan || !studyPlan.innerText.trim()) {
+
+        alert(
+            "Generate a study plan first."
+        );
+
+        return;
 
     }
 
 
-    // ==========================================
-    // GENERATE STUDY PLAN
-    // ==========================================
+    const content =
 
-    if (generateButton) {
+`STUDYMIND AI
+PERSONALIZED STUDY PLAN
+=======================
 
-        generateButton.addEventListener(
-            "click",
-            async function () {
+${studyPlan.innerText}
 
-                // ==========================================
-                // GET INPUTS
-                // ==========================================
+=======================
 
-                const curriculum =
-                    document.getElementById(
-                        "curriculum"
-                    )?.value || "";
-
-
-                const subjectsInput =
-                    document.getElementById(
-                        "subjects"
-                    )?.value || "";
-
-
-                const topics =
-                    document.getElementById(
-                        "topics"
-                    )?.value || "";
-
-
-                const examDate =
-                    document.getElementById(
-                        "examDate"
-                    )?.value || "";
-
-
-                const hoursPerDay =
-                    Number(
-                        document.getElementById(
-                            "hoursPerDay"
-                        )?.value
-                    );
-
-
-                const startTime =
-                    document.getElementById(
-                        "startTime"
-                    )?.value || "";
-
-
-                const plan =
-                    document.getElementById(
-                        "studyPlan"
-                    );
-
-
-                // ==========================================
-                // VALIDATION
-                // ==========================================
-
-                if (!plan) {
-
-                    console.error(
-                        "studyPlan element was not found."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    subjectsInput.trim() === ""
-                ) {
-
-                    alert(
-                        "Please enter at least one subject."
-                    );
-
-                    return;
-
-                }
-
-
-                if (examDate === "") {
-
-                    alert(
-                        "Please select your exam date."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    !hoursPerDay ||
-                    isNaN(hoursPerDay) ||
-                    hoursPerDay <= 0
-                ) {
-
-                    alert(
-                        "Please enter the number of hours you can study each day."
-                    );
-
-                    return;
-
-                }
-
-
-                if (startTime === "") {
-
-                    alert(
-                        "Please choose a study start time."
-                    );
-
-                    return;
-
-                }
-
-
-                // ==========================================
-                // START TIME
-                // ==========================================
-
-                const startHour =
-                    Number(
-                        startTime.split(":")[0]
-                    );
-
-
-                // ==========================================
-                // SUBJECT LIST
-                // ==========================================
-
-                const subjectList =
-                    subjectsInput
-                        .split(/[.,;]/)
-                        .map(
-                            subject =>
-                                subject
-                                    .trim()
-                                    .toLowerCase()
-                        )
-                        .filter(
-                            subject =>
-                                subject !== ""
-                        );
-
-
-                if (
-                    subjectList.length === 0
-                ) {
-
-                    alert(
-                        "Please enter at least one valid subject."
-                    );
-
-                    return;
-
-                }
-
-
-                const numberOfSubjects =
-                    subjectList.length;
-
-
-                // ==========================================
-                // EXAM DATE
-                // ==========================================
-
-                const today =
-                    new Date();
-
-
-                const exam =
-                    new Date(examDate);
-
-
-                today.setHours(
-                    0,
-                    0,
-                    0,
-                    0
-                );
-
-
-                exam.setHours(
-                    0,
-                    0,
-                    0,
-                    0
-                );
-
-
-                if (exam < today) {
-
-                    alert(
-                        "The exam date has already passed. Please choose a future date."
-                    );
-
-                    return;
-
-                }
-
-
-                const timeDifference =
-                    exam - today;
-
-
-                const daysLeft =
-                    Math.ceil(
-                        timeDifference /
-                        (
-                            1000 *
-                            60 *
-                            60 *
-                            24
-                        )
-                    );
-
-
-                // ==========================================
-                // URGENCY
-                // ==========================================
-
-                let urgency = "";
-
-
-                if (daysLeft > 90) {
-
-                    urgency =
-                        "🟢 You have plenty of time. Focus on learning new concepts.";
-
-                }
-
-                else if (daysLeft > 30) {
-
-                    urgency =
-                        "🟡 Your exam is getting closer. Start practicing past questions regularly.";
-
-                }
-
-                else if (daysLeft > 7) {
-
-                    urgency =
-                        "🟠 Your exam is close. Increase your revision and practice every day.";
-
-                }
-
-                else {
-
-                    urgency =
-                        "🔴❗ Your exam is just around the corner! Focus on revision and mock tests.";
-
-                }
-
-
-                // ==========================================
-                // PARSE TOPIC DATA
-                // ==========================================
-
-                const topicData =
-                    parseTopics(topics);
-
-
-                // ==========================================
-                // TOPIC DIFFICULTIES
-                // ==========================================
-
-                let topicDifficulty = {};
-
-                let topicPriority = {};
-
-
-                const difficultySelectors =
-                    document.querySelectorAll(
-                        ".difficulty-select"
-                    );
-
-
-                difficultySelectors.forEach(
-                    function (select) {
-
-                        const subject =
-                            select.dataset.subject;
-
-
-                        const topic =
-                            select.dataset.topic;
-
-
-                        if (
-                            !topicDifficulty[subject]
-                        ) {
-
-                            topicDifficulty[subject] =
-                                {};
-
-                            topicPriority[subject] =
-                                {};
-
-                        }
-
-
-                        topicDifficulty[subject][topic] =
-                            select.value;
-
-
-                        if (
-                            select.value === "weak"
-                        ) {
-
-                            topicPriority[subject][topic] =
-                                3;
-
-                        }
-
-                        else if (
-                            select.value === "medium"
-                        ) {
-
-                            topicPriority[subject][topic] =
-                                2;
-
-                        }
-
-                        else {
-
-                            topicPriority[subject][topic] =
-                                1;
-
-                        }
-
-                    }
-                );
-
-
-                // ==========================================
-                // TODAY
-                // ==========================================
-
-                const currentDay =
-                    new Date().getDay();
-
-
-                const dayNames = [
-
-                    "Sunday",
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday"
-
-                ];
-
-
-                const todayName =
-                    dayNames[currentDay];
-
-
-                const todaySubject =
-                    subjectList[
-                        currentDay %
-                        subjectList.length
-                    ];
-
-
-                // ==========================================
-                // SUBJECT PRIORITIES
-                // ==========================================
-
-                let subjectPriority = {};
-
-
-                subjectList.forEach(
-                    function (subject) {
-
-                        const difficulties =
-                            topicPriority[subject];
-
-
-                        let weakestLevel =
-                            2;
-
-
-                        if (difficulties) {
-
-                            const values =
-                                Object.values(
-                                    difficulties
-                                );
-
-
-                            if (
-                                values.length > 0
-                            ) {
-
-                                weakestLevel =
-                                    Math.max(
-                                        ...values
-                                    );
-
-                            }
-
-                        }
-
-
-                        subjectPriority[subject] =
-                            weakestLevel;
-
-                    }
-                );
-
-
-                // ==========================================
-                // DAILY SCHEDULE
-                // ==========================================
-
-                let dailySchedule = "";
-
-
-                let usedSubjects = {};
-
-
-                subjectList.forEach(
-                    function (subject) {
-
-                        usedSubjects[subject] =
-                            0;
-
-                    }
-                );
-
-
-                for (
-                    let index = 0;
-                    index < hoursPerDay;
-                    index++
-                ) {
-
-                    let bestSubject =
-                        null;
-
-
-                    let bestPriority =
-                        -Infinity;
-
-
-                    subjectList.forEach(
-                        function (subject) {
-
-                            const priority =
-                                subjectPriority[
-                                    subject
-                                ] || 2;
-
-
-                            const adjustedPriority =
-                                priority -
-                                (
-                                    usedSubjects[
-                                        subject
-                                    ] * 1.5
-                                );
-
-
-                            if (
-                                bestSubject === null ||
-                                adjustedPriority >
-                                bestPriority
-                            ) {
-
-                                bestPriority =
-                                    adjustedPriority;
-
-
-                                bestSubject =
-                                    subject;
-
-                            }
-
-                        }
-                    );
-
-
-                    usedSubjects[
-                        bestSubject
-                    ]++;
-
-
-                    const start =
-                        startHour + index;
-
-
-                    const end =
-                        start + 1;
-
-
-                    dailySchedule += `
-
-                        <div class="schedule-card">
-
-                            <h4>
-                                ${formatTime(start)}
-                                -
-                                ${formatTime(end)}
-                            </h4>
-
-                            <p>
-                                <strong>
-                                    ${bestSubject}
-                                </strong>
-                            </p>
-
-                        </div>
-
-                    `;
-
-                }
-
-
-                // ==========================================
-                // WEEKLY TIMETABLE
-                // ==========================================
-
-                let timetableData = [];
-
-                let timetable =
-                    `<table>`;
-
-
-                if (daysLeft > 30) {
-
-                    for (
-                        let h = 0;
-                        h < hoursPerDay;
-                        h++
-                    ) {
-
-                        const start =
-                            startHour + h;
-
-
-                        const end =
-                            start + 1;
-
-
-                        const displayStart =
-                            formatTime(start);
-
-
-                        const displayEnd =
-                            formatTime(end);
-
-
-                        let row = [];
-
-
-                        row.push(
-                            `${displayStart} - ${displayEnd}`
-                        );
-
-
-                        timetable +=
-                            `<tr>`;
-
-
-                        for (
-                            let d = 0;
-                            d < 7;
-                            d++
-                        ) {
-
-                            const subject =
-                                subjectList[
-                                    (
-                                        d + h
-                                    ) %
-                                    subjectList.length
-                                ];
-
-
-                            row.push(
-                                subject
-                            );
-
-
-                            timetable +=
-                                `<td>${subject}</td>`;
-
-                        }
-
-
-                        timetableData.push(
-                            row
-                        );
-
-
-                        timetable +=
-                            `</tr>`;
-
-                    }
-
-                }
-
-                else {
-
-                    const activities = [
-
-                        "Past Questions",
-                        "Weak Topics",
-                        "Timed Practice",
-                        "Mistake Review"
-
-                    ];
-
-
-                    for (
-                        let h = 0;
-                        h < hoursPerDay;
-                        h++
-                    ) {
-
-                        const start =
-                            startHour + h;
-
-
-                        const end =
-                            start + 1;
-
-
-                        const displayStart =
-                            formatTime(start);
-
-
-                        const displayEnd =
-                            formatTime(end);
-
-
-                        let row = [];
-
-
-                        row.push(
-                            `${displayStart} - ${displayEnd}`
-                        );
-
-
-                        timetable +=
-                            `<tr>`;
-
-
-                        for (
-                            let d = 0;
-                            d < 7;
-                            d++
-                        ) {
-
-                            const activity =
-                                activities[
-                                    (
-                                        d + h
-                                    ) %
-                                    activities.length
-                                ];
-
-
-                            row.push(
-                                activity
-                            );
-
-
-                            timetable +=
-                                `<td>${activity}</td>`;
-
-                        }
-
-
-                        timetableData.push(
-                            row
-                        );
-
-
-                        timetable +=
-                            `</tr>`;
-
-                    }
-
-                }
-
-
-                timetable +=
-                    `</table>`;
-
-
-                // ==========================================
-                // CURRICULUM ADVICE
-                // ==========================================
-
-                let advice =
-                    "Revise consistently and practice questions regularly.";
-
-
-                if (curriculum === "WAEC") {
-
-                    advice =
-                        "Practice WAEC past questions at least three times every week.";
-
-                }
-
-                else if (curriculum === "JAMB") {
-
-                    advice =
-                        "Practice CBT questions daily to improve your speed and accuracy.";
-
-                }
-
-                else if (curriculum === "NECO") {
-
-                    advice =
-                        "Combine your class notes with NECO past questions.";
-
-                }
-
-                else if (curriculum === "IGCSE") {
-
-                    advice =
-                        "Focus on understanding concepts and solving structured questions.";
-
-                }
-
-                else if (curriculum === "SAT") {
-
-                    advice =
-                        "Spend time on timed reading and math practice tests.";
-
-                }
-
-
-                // ==========================================
-                // RECOMMENDATIONS
-                // ==========================================
-
-                let recommendations = "";
-
-
-                subjectList.forEach(
-                    function (subject) {
-
-                        let tip =
-                            "Revise this subject carefully.";
-
-
-                        switch (subject) {
-
-                            case "mathematics":
-
-                                tip =
-                                    "Practice calculations and solve at least 20 questions.";
-
-                                break;
-
-
-                            case "english":
-
-                                tip =
-                                    "Read a comprehension passage and learn five new vocabulary words.";
-
-                                break;
-
-
-                            case "physics":
-
-                                tip =
-                                    "Revise formulas and solve numerical problems.";
-
-                                break;
-
-
-                            case "chemistry":
-
-                                tip =
-                                    "Study chemical equations and balancing reactions.";
-
-                                break;
-
-
-                            case "biology":
-
-                                tip =
-                                    "Study diagrams and important definitions.";
-
-                                break;
-
-
-                            case "economics":
-
-                                tip =
-                                    "Review graphs and important economic concepts.";
-
-                                break;
-
-
-                            case "government":
-
-                                tip =
-                                    "Read the constitution and revise key political ideas.";
-
-                                break;
-
-                        }
-
-
-                        recommendations += `
-
-                            <div class="recommendation-card">
-
-                                <h4>📚 ${subject}</h4>
-
-                                <p>${tip}</p>
-
-                            </div>
-
-                        `;
-
-                    }
-                );
-
-
-                // ==========================================
-                // STUDY SCORE
-                // ==========================================
-
-                let studyScore =
-                    100;
-
-
-                if (
-                    numberOfSubjects >= 7 &&
-                    hoursPerDay < 3
-                ) {
-
-                    studyScore -=
-                        25;
-
-                }
-
-
-                if (
-                    daysLeft <= 14
-                ) {
-
-                    studyScore -=
-                        15;
-
-                }
-
-
-                if (
-                    hoursPerDay >= 5
-                ) {
-
-                    studyScore +=
-                        10;
-
-                }
-
-
-                if (
-                    daysLeft > 90
-                ) {
-
-                    studyScore +=
-                        5;
-
-                }
-
-
-                studyScore =
-                    Math.max(
-                        0,
-                        Math.min(
-                            100,
-                            studyScore
-                        )
-                    );
-
-
-                // ==========================================
-                // STUDY STREAK
-                // ==========================================
-
-                let streak =
-                    Number(
-                        localStorage.getItem(
-                            "studyStreak"
-                        )
-                    ) || 0;
-
-
-                const lastVisit =
-                    localStorage.getItem(
-                        "lastStudyDate"
-                    );
-
-
-                const todayDate =
-                    new Date().toDateString();
-
-
-                if (
-                    lastVisit !== todayDate
-                ) {
-
-                    streak++;
-
-
-                    localStorage.setItem(
-                        "studyStreak",
-                        streak
-                    );
-
-
-                    localStorage.setItem(
-                        "lastStudyDate",
-                        todayDate
-                    );
-
-                }
-
-
-                // ==========================================
-                // STUDY DATA
-                // ==========================================
-
-                const studyData = {
-
-                    curriculum,
-
-                    subjects:
-                        subjectList,
-
-                    topics:
-                        topicData,
-
-                    topicDifficulty,
-
-                    topicPriority,
-
-                    examDate,
-
-                    startTime,
-
-                    todaySubject,
-
-                    advice,
-
-                    daysLeft,
-
-                    urgency,
-
-                    hoursPerDay,
-
-                    timetableData,
-
-                    studyScore,
-
-                    streak
-
-                };
-
-
-                // ==========================================
-                // DISPLAY STUDY PLAN
-                // ==========================================
-
-                plan.innerHTML = `
-
-                    <h2>Your Study Plan</h2>
-
-
-                    <div class="dashboard">
-
-                        <div class="card">
-
-                            <h3>⌛</h3>
-
-                            <h2>
-                                ${daysLeft}
-                            </h2>
-
-                            <p>
-                                Days Left
-                            </p>
-
-                        </div>
-
-
-                        <div class="card">
-
-                            <h3>📚</h3>
-
-                            <h2>
-                                ${numberOfSubjects}
-                            </h2>
-
-                            <p>
-                                Subjects
-                            </p>
-
-                        </div>
-
-
-                        <div class="card">
-
-                            <h3>⏰</h3>
-
-                            <h2>
-                                ${hoursPerDay}
-                            </h2>
-
-                            <p>
-                                Hours / Day
-                            </p>
-
-                        </div>
-
-
-                        <div class="card">
-
-                            <h3>🎯</h3>
-
-                            <h2>
-                                ${todaySubject}
-                            </h2>
-
-                            <p>
-                                Today's Focus
-                            </p>
-
-                        </div>
-
-
-                        <div class="card">
-
-                            <h3>🔥</h3>
-
-                            <h2>
-                                ${streak}
-                            </h2>
-
-                            <p>
-                                Study Streak
-                            </p>
-
-                        </div>
-
-
-                        <div class="card">
-
-                            <h3>⭐</h3>
-
-                            <h2>
-                                ${studyScore}
-                            </h2>
-
-                            <p>
-                                Study Score
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <h3>
-                        📈 Study Evaluation
-                    </h3>
-
-
-                    <p>
-
-                        ${
-                            studyScore >= 90
-
-                                ? "🏆 Excellent! Your study plan is well balanced."
-
-                                : studyScore >= 75
-
-                                ? "⭐ Good! Keep following your schedule."
-
-                                : studyScore >= 60
-
-                                ? "⚠️ Fair. Consider increasing your study hours."
-
-                                : "❌ Your plan needs improvement. Reduce distractions and study more consistently."
-                        }
-
-                    </p>
-
-
-                    <p>
-
-                        <strong>
-                            Curriculum:
-                        </strong>
-
-                        ${curriculum}
-
-                    </p>
-
-
-                    <p>
-
-                        <strong>
-                            Subjects:
-                        </strong>
-
-                        ${subjectList.join(", ")}
-
-                    </p>
-
-
-                    <p>
-                        ${advice}
-                    </p>
-
-
-                    <p>
-                        ${urgency}
-                    </p>
-
-
-                    <h3>
-                        📌 Today's Mission
-                    </h3>
-
-
-                    <p>
-
-                        Today is
-                        <strong>
-                            ${todayName}
-                        </strong>.
-
-                        Your main focus is
-                        <strong>
-                            ${todaySubject}
-                        </strong>.
-
-                        Complete every study session before taking a break.
-
-                    </p>
-
-
-                    <h3>
-                        📅 Today's Schedule
-                    </h3>
-
-
-                    <div class="dailySchedule">
-
-                        ${dailySchedule}
-
-                    </div>
-
-
-                    <h3>
-                        📆 Weekly Timetable
-                    </h3>
-
-
-                    ${timetable}
-
-
-                    <h3>
-                        ✅ Progress Tracker
-                    </h3>
-
-
-                    <div id="progressTracker">
-
-                        ${
-                            subjectList
-                                .map(
-                                    subject => `
-
-                                <label class="progress-item">
-
-                                    <input
-                                        type="checkbox"
-                                        class="subjectCheck"
-                                        value="${subject}"
-                                    >
-
-                                    ${subject}
-
-                                </label>
-
-                                <br>
-
-                            `
-                                )
-                                .join("")
-                        }
-
-                    </div>
-
-
-                    <h3>
-                        📈 Progress
-                    </h3>
-
-
-                    <div class="progressBarContainer">
-
-                        <div
-                            id="progressBar"
-                            style="width: 0%;"
-                        ></div>
-
-                    </div>
-
-
-                    <p>
-
-                        <span id="progressPercent">
-                            0%
-                        </span>
-
-                        completed
-
-                    </p>
-
-
-                    <p id="progressCount">
-
-                        0 of
-                        ${numberOfSubjects}
-                        subjects completed
-
-                    </p>
-
-
-                    <h3>
-                        🏆 Achievements
-                    </h3>
-
-
-                    <div class="badges">
-
-                        ${
-                            daysLeft <= 30
-
-                                ? '<div class="badge">🔥 Exam Warrior</div>'
-
-                                : ""
-                        }
-
-
-                        ${
-                            numberOfSubjects >= 5
-
-                                ? '<div class="badge">📚 Multi-Subject Learner</div>'
-
-                                : ""
-                        }
-
-
-                        <div class="badge">
-
-                            🥇 First Study Plan
-
-                        </div>
-
-
-                        ${
-                            hoursPerDay >= 5
-
-                                ? '<div class="badge">⭐ Productivity Master</div>'
-
-                                : ""
-                        }
-
-                    </div>
-
-
-                    <h3>
-                        📊 Study Statistics
-                    </h3>
-
-
-                    <div class="stats">
-
-                        <div class="stat-box">
-
-                            <h4>
-                                📚 Total Subjects
-                            </h4>
-
-                            <p>
-                                ${numberOfSubjects}
-                            </p>
-
-                        </div>
-
-
-                        <div class="stat-box">
-
-                            <h4>
-                                ⏰ Weekly Hours
-                            </h4>
-
-                            <p>
-                                ${hoursPerDay * 7}
-                            </p>
-
-                        </div>
-
-
-                        <div class="stat-box">
-
-                            <h4>
-                                📅 Days Left
-                            </h4>
-
-                            <p>
-                                ${daysLeft}
-                            </p>
-
-                        </div>
-
-
-                        <div class="stat-box">
-
-                            <h4>
-                                🔥 Daily Goal
-                            </h4>
-
-                            <p>
-                                ${hoursPerDay} hrs
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <h3>
-                        💡 Subject Recommendations
-                    </h3>
-
-
-                    <div class="recommendations">
-
-                        ${recommendations}
-
-                    </div>
-
-                `;
-
-
-                // ==========================================
-                // PROGRESS TRACKER
-                // ==========================================
-
-                const checks =
-                    plan.querySelectorAll(
-                        ".subjectCheck"
-                    );
-
-
-                function updateProgress() {
-
-                    let completed =
-                        0;
-
-
-                    checks.forEach(
-                        function (check) {
-
-                            if (
-                                check.checked
-                            ) {
-
-                                completed++;
-
-                            }
-
-                        }
-                    );
-
-
-                    const percent =
-                        checks.length > 0
-
-                            ? Math.round(
-                                (
-                                    completed /
-                                    checks.length
-                                ) * 100
-                            )
-
-                            : 0;
-
-
-                    const progressPercent =
-                        document.getElementById(
-                            "progressPercent"
-                        );
-
-
-                    const progressBar =
-                        document.getElementById(
-                            "progressBar"
-                        );
-
-
-                    const progressCount =
-                        document.getElementById(
-                            "progressCount"
-                        );
-
-
-                    if (
-                        progressPercent
-                    ) {
-
-                        progressPercent.textContent =
-                            percent + "%";
-
-                    }
-
-
-                    if (
-                        progressBar
-                    ) {
-
-                        progressBar.style.width =
-                            percent + "%";
-
-                    }
-
-
-                    if (
-                        progressCount
-                    ) {
-
-                        progressCount.textContent =
-                            `${completed} of ${checks.length} subjects completed`;
-
-                    }
-
-                }
-
-
-                checks.forEach(
-                    function (check) {
-
-                        check.addEventListener(
-                            "change",
-                            updateProgress
-                        );
-
-                    }
-                );
-
-
-                // ==========================================
-                // RESET PROGRESS
-                // ==========================================
-
-                localStorage.setItem(
-                    "completedSubjects",
-                    JSON.stringify([])
-                );
-
-
-                localStorage.setItem(
-                    "studyProgress",
-                    JSON.stringify({
-
-                        completedTopics: [],
-
-                        studiedSeconds: {},
-
-                        currentTopicIndex: 0
-
-                    })
-                );
-
-
-                updateProgress();
-
-
-                // ==========================================
-                // AI ANALYSIS
-                // ==========================================
-
-                let aiAnalysis =
-                    "StudyMind AI analysis is currently unavailable, but your personalized study plan has been created successfully.";
-
-
-                try {
-
-                    // ==========================================
-                    // AI PROMPT
-                    // ==========================================
-
-                    const aiPrompt = `
-
-You are StudyMind AI, a personalized AI study coach.
-
-Analyze the student's information below.
-
-Your job is to give specific and useful academic guidance based on
-the student's actual subjects, topics, topic difficulties, exam date,
-available study time, curriculum and study score.
-
-Do NOT simply repeat the student's information.
-
-Prioritize weak topics.
-
-Consider how much time the student has before the exam.
-
-Give practical recommendations that the student can actually follow.
-
-The student is a secondary-school student, so keep the advice
-appropriate and easy to understand.
-
-Use clear headings and bullet points.
-
-STUDENT INFORMATION
---------------------
-
-Curriculum:
-${curriculum}
-
-Subjects:
-${subjectList.join(", ")}
-
-Topics:
-${JSON.stringify(
-    topicData,
-    null,
-    2
-)}
-
-Topic Difficulties:
-${JSON.stringify(
-    topicDifficulty,
-    null,
-    2
-)}
-
-Topic Priorities:
-${JSON.stringify(
-    topicPriority,
-    null,
-    2
-)}
-
-Exam Date:
-${examDate}
-
-Days Until Exam:
-${daysLeft}
-
-Hours Available Per Day:
-${hoursPerDay}
-
-Normal Study Start Time:
-${startTime}
-
-Today's Focus:
-${todaySubject}
-
-Study Score:
-${studyScore}
-
-Urgency:
-${urgency}
-
-Please provide the following:
-
-1. OVERALL ASSESSMENT
-
-Give a short assessment of the student's current preparation.
-
-2. WEAKEST AREAS
-
-Identify the topics that should receive the most attention.
-
-3. WHAT TO STUDY FIRST
-
-Tell the student exactly what they should prioritize.
-
-4. STUDY STRATEGY
-
-Give a practical strategy based on their available hours.
-
-5. EXAM PREPARATION
-
-Give advice appropriate for their curriculum and remaining time.
-
-6. TODAY'S GOAL
-
-Give the student one clear goal they should complete today.
-
-Keep the response useful and reasonably concise.
+Generated by StudyMind AI
 `;
 
 
-                    // ==========================================
-                    // CALL AI
-                    // ==========================================
-
-                    if (
-                        typeof askAI ===
-                        "function"
-                    ) {
-
-                        const result =
-                            await askAI(
-                                aiPrompt
-                            );
+    const blob =
+        new Blob(
+            [content],
+            {
+                type: "text/plain"
+            }
+        );
 
 
-                        if (
-                            result &&
-                            result.trim() !== ""
-                        ) {
+    const url =
+        URL.createObjectURL(blob);
 
-                            aiAnalysis =
-                                result;
 
-                        }
+    const link =
+        document.createElement("a");
 
-                    }
 
-                    else {
+    link.href = url;
 
-                        console.error(
-                            "askAI function was not found. Check ask-ai.js."
+    link.download =
+        "StudyMind-AI-Study-Plan.txt";
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* ---------- THEME TOGGLE ---------- */
+
+if (themeToggle) {
+
+    themeToggle.addEventListener(
+        "click",
+        () => {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const isLight =
+                document.body.classList.contains(
+                    "light-mode"
+                );
+
+
+            localStorage.setItem(
+                "studyMindTheme",
+                isLight
+                    ? "light"
+                    : "dark"
+            );
+
+
+            updateThemeIcon();
+
+        }
+    );
+
+}
+
+
+function updateThemeIcon() {
+
+    if (!themeToggle) {
+        return;
+    }
+
+
+    const isLight =
+        document.body.classList.contains(
+            "light-mode"
+        );
+
+
+    themeToggle.textContent =
+        isLight
+            ? "☀️"
+            : "🌙";
+
+}
+
+
+/* ---------- LOAD THEME ---------- */
+
+const savedTheme =
+    localStorage.getItem(
+        "studyMindTheme"
+    );
+
+
+if (savedTheme === "light") {
+
+    document.body.classList.add(
+        "light-mode"
+    );
+
+}
+
+
+updateThemeIcon();
+
+
+/* ---------- SAVE STUDY DATA ---------- */
+
+function saveStudyData(data) {
+
+    localStorage.setItem(
+        "studyMindData",
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* ---------- LOAD SAVED DATA ---------- */
+
+function loadStudyData() {
+
+    const saved =
+        localStorage.getItem(
+            "studyMindData"
+        );
+
+
+    if (!saved) {
+        return;
+    }
+
+
+    try {
+
+        const data =
+            JSON.parse(saved);
+
+
+        if (data.curriculum &&
+            curriculumSelect) {
+
+            curriculumSelect.value =
+                data.curriculum;
+
+        }
+
+
+        if (data.difficulty &&
+            difficultySelect) {
+
+            difficultySelect.value =
+                data.difficulty;
+
+        }
+
+
+        if (data.studyTime &&
+            studyTimeInput) {
+
+            studyTimeInput.value =
+                data.studyTime;
+
+        }
+
+
+        if (data.examDate &&
+            examDateInput) {
+
+            examDateInput.value =
+                data.examDate;
+
+        }
+
+
+        if (Array.isArray(data.subjects)) {
+
+            subjectCheckboxes.forEach(
+                checkbox => {
+
+                    checkbox.checked =
+                        data.subjects.includes(
+                            checkbox.value
+                        );
+
+                }
+            );
+
+        }
+
+
+        updateSubjectCounter();
+
+
+    } catch (error) {
+
+        console.error(
+            "Could not load saved StudyMind data:",
+            error
+        );
+
+    }
+
+}
+
+
+loadStudyData();
+
+
+/* ---------- DASHBOARD LINK ---------- */
+
+const dashboardButton =
+    document.getElementById(
+        "dashboardButton"
+    );
+
+
+if (dashboardButton) {
+
+    dashboardButton.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "dashboard.html";
+
+        }
+    );
+
+}
+
+
+/* ---------- ASK AI BUTTON ---------- */
+
+const askAIButton =
+    document.getElementById(
+        "askAIButton"
+    );
+
+
+if (askAIButton) {
+
+    askAIButton.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "ask-ai.html";
+
+        }
+    );
+
+}
+
+
+/* ---------- ANIMATION ON SCROLL ---------- */
+
+const animatedElements =
+    document.querySelectorAll(
+        ".feature-card, .step-card, .subject-plan-card"
+    );
+
+
+if ("IntersectionObserver" in window) {
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add(
+                            "visible"
                         );
 
                     }
 
-                }
+                });
 
-                catch (error) {
-
-                    console.error(
-                        "AI analysis error:",
-                        error
-                    );
-
-                }
-
-
-                // ==========================================
-                // ADD AI ANALYSIS TO STUDY DATA
-                // ==========================================
-
-                studyData.aiAnalysis =
-                    aiAnalysis;
-
-
-                // ==========================================
-                // SAVE STUDY PLAN
-                // ==========================================
-
-                localStorage.setItem(
-                    "studyPlan",
-                    plan.innerHTML
-                );
-
-
-                // ==========================================
-                // SAVE STUDY DATA
-                // ==========================================
-
-                localStorage.setItem(
-                    "studyData",
-                    JSON.stringify(
-                        studyData
-                    )
-                );
-
-
-                // ==========================================
-                // SAVE AI ANALYSIS
-                // ==========================================
-
-                localStorage.setItem(
-                    "aiAnalysis",
-                    aiAnalysis
-                );
-
-
-                // ==========================================
-                // GO TO DASHBOARD
-                // ==========================================
-
-                window.location.href =
-                    "dashboard.html";
-
+            },
+            {
+                threshold: 0.1
             }
         );
 
-    }
+
+    animatedElements.forEach(element => {
+
+        observer.observe(element);
+
+    });
+
+}
 
 
-    // ==========================================
-    // DARK MODE
-    // ==========================================
+/* ---------- CURRENT YEAR ---------- */
 
-    if (
-        localStorage.getItem("theme") ===
-        "dark"
-    ) {
-
-        document.body.classList.add(
-            "dark-mode"
-        );
+const yearElement =
+    document.getElementById(
+        "currentYear"
+    );
 
 
-        if (themeButton) {
+if (yearElement) {
 
-            themeButton.textContent =
-                "☀️ Light Mode";
+    yearElement.textContent =
+        new Date().getFullYear();
 
-        }
-
-    }
+}
 
 
-    if (themeButton) {
+/* ---------- INITIALIZE ---------- */
 
-        themeButton.addEventListener(
-            "click",
-            function () {
+updateSubjectCounter();
 
-                document.body.classList.toggle(
-                    "dark-mode"
-                );
-
-
-                if (
-                    document.body.classList.contains(
-                        "dark-mode"
-                    )
-                ) {
-
-                    localStorage.setItem(
-                        "theme",
-                        "dark"
-                    );
-
-
-                    themeButton.textContent =
-                        "☀️ Light Mode";
-
-                }
-
-                else {
-
-                    localStorage.setItem(
-                        "theme",
-                        "light"
-                    );
-
-
-                    themeButton.textContent =
-                        "🌙 Dark Mode";
-
-                }
-
-            }
-        );
-
-    }
-
-});
+console.log(
+    "StudyMind AI initialized successfully."
+);
