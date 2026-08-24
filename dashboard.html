@@ -1,1101 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>StudyMind AI — Dashboard</title>
+    <title>StudyMind AI - Study Dashboard</title>
 
     <link rel="stylesheet" href="style.css">
-
-    <!-- Icons -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
 </head>
 
-<body class="dashboard-page">
+<body>
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
-    <aside class="sidebar" id="sidebar">
+    <nav class="navbar">
 
-        <div class="sidebar-top">
+        <h2 class="logo">StudyMind AI</h2>
 
-            <div class="dashboard-logo">
-                <div class="logo-icon">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#calendar">Calendar</a></li>
+            <li><a href="#schedule">Schedule</a></li>
+        </ul>
 
-                <span>StudyMind <strong>AI</strong></span>
-            </div>
+        <button id="themeButton">
+        🌙 Dark Mode
+    </button>
 
-            <button class="sidebar-close" id="sidebarClose">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
+    </nav>
 
 
-        <!-- Navigation -->
-        <nav class="dashboard-nav">
+    <main class="dashboard-page">
 
-            <a href="#overview" class="dashboard-nav-link active">
-                <i class="fa-solid fa-house"></i>
-                <span>Overview</span>
-            </a>
+        <h1>My Study Dashboard</h1>
 
-            <a href="#study-plan" class="dashboard-nav-link">
-                <i class="fa-solid fa-book-open"></i>
-                <span>Study Plan</span>
-            </a>
-
-            <a href="#timetable" class="dashboard-nav-link">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Timetable</span>
-            </a>
-
-            <a href="#progress" class="dashboard-nav-link">
-                <i class="fa-solid fa-chart-line"></i>
-                <span>Progress</span>
-            </a>
-
-            <a href="#practice" class="dashboard-nav-link">
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span>Practice</span>
-            </a>
-
-            <a href="#resources" class="dashboard-nav-link">
-                <i class="fa-solid fa-folder-open"></i>
-                <span>Resources</span>
-            </a>
-
-        </nav>
+        <p class="dashboard-subtitle">
+            Your personalized study plan
+        </p>
 
 
-        <!-- Sidebar bottom -->
-        <div class="sidebar-bottom">
+        <!-- TOP STATISTICS -->
 
-            <a href="index.html" class="dashboard-nav-link">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span>Back to Home</span>
-            </a>
+        <section class="top-stats">
 
-            <button class="dashboard-nav-link sidebar-settings" id="settingsButton">
-                <i class="fa-solid fa-gear"></i>
-                <span>Settings</span>
-            </button>
+            <div class="stat-card">
 
-        </div>
+                <div class="icon">🕒</div>
 
-    </aside>
+                <h4>Weekly Hours</h4>
 
-
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
-    <main class="dashboard-main">
-
-        <!-- Top bar -->
-        <header class="dashboard-header">
-
-            <button class="mobile-menu-button" id="mobileMenuButton">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
-            <div class="dashboard-header-title">
-                <p class="dashboard-small-label">YOUR DASHBOARD</p>
-                <h1>Welcome back, <span id="studentName">Student</span> 👋</h1>
-                <p>
-                    Stay consistent, track your progress, and keep moving toward your goals.
-                </p>
-            </div>
-
-
-            <div class="dashboard-header-actions">
-
-                <!-- Theme toggle -->
-                <button
-                    class="dashboard-icon-button"
-                    id="dashboardThemeToggle"
-                    title="Toggle theme"
-                >
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-
-
-                <!-- Notifications -->
-                <button
-                    class="dashboard-icon-button notification-button"
-                    id="notificationButton"
-                    title="Notifications"
-                >
-                    <i class="fa-regular fa-bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
-
-
-                <!-- Profile -->
-                <div class="dashboard-profile">
-
-                    <div class="profile-avatar">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-
-                    <div class="profile-info">
-                        <strong id="profileName">Student</strong>
-                        <span>Student</span>
-                    </div>
-
-                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
-
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- =========================
-             OVERVIEW
-        ========================== -->
-        <section class="dashboard-section" id="overview">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-                    <span class="section-eyebrow">OVERVIEW</span>
-                    <h2>Your study progress</h2>
-                </div>
-
-                <button class="dashboard-primary-button" id="continueStudying">
-                    <i class="fa-solid fa-play"></i>
-                    Continue Studying
-                </button>
+                <h2 id="weeklyHours">0</h2>
 
             </div>
 
 
-            <!-- Stats -->
-            <div class="dashboard-stats-grid">
+            <div class="stat-card">
 
-                <div class="dashboard-stat-card">
+                <div class="icon">📅</div>
 
-                    <div class="stat-card-top">
-                        <div class="stat-icon">
-                            <i class="fa-solid fa-fire"></i>
-                        </div>
+                <h4>Days Left</h4>
 
-                        <span class="stat-change positive">
-                            +2 days
-                        </span>
-                    </div>
-
-                    <div class="stat-value" id="streakValue">
-                        0
-                    </div>
-
-                    <div class="stat-label">
-                        Day Streak
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-stat-card">
-
-                    <div class="stat-card-top">
-                        <div class="stat-icon">
-                            <i class="fa-solid fa-clock"></i>
-                        </div>
-
-                        <span class="stat-change">
-                            This week
-                        </span>
-                    </div>
-
-                    <div class="stat-value" id="studyHours">
-                        0h
-                    </div>
-
-                    <div class="stat-label">
-                        Study Time
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-stat-card">
-
-                    <div class="stat-card-top">
-                        <div class="stat-icon">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-
-                        <span class="stat-change positive">
-                            On track
-                        </span>
-                    </div>
-
-                    <div class="stat-value" id="completedTasks">
-                        0
-                    </div>
-
-                    <div class="stat-label">
-                        Tasks Completed
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-stat-card">
-
-                    <div class="stat-card-top">
-                        <div class="stat-icon">
-                            <i class="fa-solid fa-chart-simple"></i>
-                        </div>
-
-                        <span class="stat-change">
-                            Overall
-                        </span>
-                    </div>
-
-                    <div class="stat-value">
-                        <span id="overallProgress">0</span>%
-                    </div>
-
-                    <div class="stat-label">
-                        Overall Progress
-                    </div>
-
-                </div>
+                <h2 id="daysLeft">0</h2>
 
             </div>
 
 
-            <!-- Main overview grid -->
-            <div class="dashboard-overview-grid">
+            <div class="stat-card">
+
+                <div class="icon">🎯</div>
+
+                <h4>Daily Goal</h4>
+
+                <h2 id="dailyGoal">0 hrs</h2>
+
+            </div>
 
 
-                <!-- Progress card -->
-                <div class="dashboard-card progress-overview-card">
+            <div class="stat-card">
 
-                    <div class="dashboard-card-header">
+                <div class="icon">⭐</div>
 
-                        <div>
-                            <span class="card-eyebrow">YOUR PROGRESS</span>
-                            <h3>Keep going</h3>
-                        </div>
+                <h4>Study Score</h4>
 
-                        <button class="card-menu-button">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-
-                    </div>
-
-
-                    <div class="progress-dashboard-content">
-
-                        <div class="progress-circle">
-
-                            <svg
-                                width="180"
-                                height="180"
-                                viewBox="0 0 180 180"
-                            >
-
-                                <circle
-                                    class="progress-circle-background"
-                                    cx="90"
-                                    cy="90"
-                                    r="72"
-                                ></circle>
-
-                                <circle
-                                    class="progress-circle-value"
-                                    id="dashboardProgressCircle"
-                                    cx="90"
-                                    cy="90"
-                                    r="72"
-                                ></circle>
-
-                            </svg>
-
-                            <div class="progress-circle-text">
-                                <strong>
-                                    <span id="progressCirclePercent">0</span>%
-                                </strong>
-
-                                <span>Completed</span>
-                            </div>
-
-                        </div>
-
-
-                        <div class="progress-details">
-
-                            <p>
-                                You're making progress. Stay consistent and
-                                complete your planned study sessions.
-                            </p>
-
-                            <div class="progress-detail-row">
-                                <span>Completed</span>
-                                <strong id="progressCompletedText">0%</strong>
-                            </div>
-
-                            <div class="progress-detail-row">
-                                <span>Remaining</span>
-                                <strong id="progressRemainingText">100%</strong>
-                            </div>
-
-                            <div class="progress-bar">
-                                <div
-                                    class="progress-bar-fill"
-                                    id="dashboardProgressBar"
-                                ></div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Today's tasks -->
-                <div class="dashboard-card today-card">
-
-                    <div class="dashboard-card-header">
-
-                        <div>
-                            <span class="card-eyebrow">TODAY</span>
-                            <h3>Today's tasks</h3>
-                        </div>
-
-                        <span class="date-label" id="todayDate">
-                            Today
-                        </span>
-
-                    </div>
-
-
-                    <div class="task-list" id="todayTaskList">
-
-                        <div class="empty-task-state">
-
-                            <div class="empty-task-icon">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-
-                            <h4>No tasks yet</h4>
-
-                            <p>
-                                Your generated study plan will appear here.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                <h2 id="studyScore">0</h2>
 
             </div>
 
         </section>
 
 
-        <!-- =========================
-             STUDY PLAN
-        ========================== -->
-        <section class="dashboard-section" id="study-plan">
 
-            <div class="dashboard-section-heading">
+        <!-- MAIN DASHBOARD -->
 
-                <div>
-                    <span class="section-eyebrow">PERSONALIZED</span>
-                    <h2>Your Study Plan</h2>
-                    <p>
-                        Your subjects and study priorities, organized for you.
+        <section class="main-dashboard">
+
+
+            <!-- LEFT COLUMN -->
+
+            <div class="left-panel">
+
+
+                <!-- PROGRESS -->
+
+                <div class="panel-card">
+
+                    <h2>✅ Progress Tracker</h2>
+
+                    <div class="progress-circle">
+
+                        <span id="progressPercent">
+                        0%
+                    </span>
+
+                    </div>
+
+                    <p id="progressCount">
+                        0 of 0 subjects completed
                     </p>
+
+                    <div class="progress-bar-container">
+
+                        <div id="progressBar"></div>
+
+                    </div>
+
                 </div>
 
-                <button
-                    class="dashboard-secondary-button"
-                    id="regeneratePlanButton"
-                >
-                    <i class="fa-solid fa-rotate"></i>
-                    Regenerate
+                <!-- SUBJECTS -->
+
+                <div class="panel-card">
+
+                    <h2>📚 Subjects</h2>
+
+                    <div id="subjectList" class="subject-list">
+
+                        <!-- Subjects will be added by JavaScript -->
+
+                    </div>
+
+                </div>
+
+
+                <!-- STREAK -->
+
+                <div class="panel-card">
+
+                    <h2>🔥 Study Streak</h2>
+
+                    <h1 id="streak">
+                        0 Days
+                    </h1>
+
+                    <p>
+                        Keep it up! 🔥
+                    </p>
+
+                </div>
+
+
+
+                <!-- LIVE STUDY SCORE -->
+
+                <div class="panel-card study-score-card">
+
+                    <h2>⭐ Study Score</h2>
+
+                    <h1 class="score-number">
+                        <span id="scoreDisplay">0</span>/100
+                    </h1>
+
+                    <p id="scoreMessage">
+                        Start studying to build your score.
+                    </p>
+
+                    <div class="score-progress">
+                        <div id="scoreProgressBar"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CALENDAR -->
+
+            <div class="calendar-panel" id="calendar">
+
+                <h2>📅 Study Calendar</h2>
+
+                <div class="calendar-header">
+
+                    <button id="previousMonth">
+                    ‹
                 </button>
 
-            </div>
+                    <h2 id="calendarMonth">
+                        Month Year
+                    </h2>
 
-
-            <div class="study-plan-container" id="dashboardStudyPlan">
-
-                <div class="empty-dashboard-card">
-
-                    <div class="empty-dashboard-icon">
-                        <i class="fa-solid fa-book-open"></i>
-                    </div>
-
-                    <h3>Your study plan is waiting</h3>
-
-                    <p>
-                        Generate a study plan from the StudyMind AI homepage
-                        to see your personalized plan here.
-                    </p>
-
-                    <a href="index.html" class="dashboard-primary-button">
-                        Create Study Plan
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             TIMETABLE
-        ========================== -->
-        <section class="dashboard-section" id="timetable">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-                    <span class="section-eyebrow">SCHEDULE</span>
-                    <h2>Smart Timetable</h2>
-                    <p>
-                        Your planned study sessions at a glance.
-                    </p>
-                </div>
-
-                <button
-                    class="dashboard-secondary-button"
-                    id="downloadTimetable"
-                >
-                    <i class="fa-solid fa-download"></i>
-                    Download
+                    <button id="nextMonth">
+                    ›
                 </button>
 
-            </div>
+                </div>
 
 
-            <div class="dashboard-card timetable-card">
+                <div class="calendar-weekdays">
 
-                <div class="timetable-wrapper">
-
-                    <table class="dashboard-timetable">
-
-                        <thead>
-                            <tr>
-                                <th>Day</th>
-                                <th>Time</th>
-                                <th>Subject</th>
-                                <th>Topic</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="dashboardTimetableBody">
-
-                            <tr>
-                                <td colspan="5" class="empty-table">
-                                    <i class="fa-regular fa-calendar"></i>
-                                    <span>
-                                        Your timetable will appear here after
-                                        generating a study plan.
-                                    </span>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
 
                 </div>
 
-            </div>
 
-        </section>
-
-
-        <!-- =========================
-             PROGRESS
-        ========================== -->
-        <section class="dashboard-section" id="progress">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-                    <span class="section-eyebrow">ANALYTICS</span>
-                    <h2>Progress Tracker</h2>
-                    <p>
-                        See how consistently you're studying.
-                    </p>
+                <div class="calendar-days" id="calendarDays">
                 </div>
+                <div class="calendar-legend">
 
-            </div>
-
-
-            <div class="progress-analytics-grid">
-
-                <!-- Weekly progress -->
-                <div class="dashboard-card analytics-card">
-
-                    <div class="dashboard-card-header">
-
-                        <div>
-                            <span class="card-eyebrow">WEEKLY</span>
-                            <h3>Study activity</h3>
-                        </div>
-
+                    <div class="legend-item">
+                        <span class="legend-color study-color"></span>
+                        <span>Study Day</span>
                     </div>
 
-                    <div class="weekly-chart" id="weeklyChart">
+                    <div class="legend-item">
+                        <span class="legend-color completed-color"></span>
+                        <span>Completed</span>
+                    </div>
 
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 20%"></span>
-                            </div>
-                            <small>Mon</small>
-                        </div>
+                    <div class="legend-item">
+                        <span class="legend-color exam-color"></span>
+                        <span>Exam Day</span>
+                    </div>
 
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 40%"></span>
-                            </div>
-                            <small>Tue</small>
-                        </div>
-
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 60%"></span>
-                            </div>
-                            <small>Wed</small>
-                        </div>
-
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 35%"></span>
-                            </div>
-                            <small>Thu</small>
-                        </div>
-
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 75%"></span>
-                            </div>
-                            <small>Fri</small>
-                        </div>
-
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 90%"></span>
-                            </div>
-                            <small>Sat</small>
-                        </div>
-
-                        <div class="chart-day">
-                            <div class="chart-bar">
-                                <span style="height: 50%"></span>
-                            </div>
-                            <small>Sun</small>
-                        </div>
-
+                    <div class="legend-item">
+                        <span class="legend-color today-color"></span>
+                        <span>Today</span>
                     </div>
 
                 </div>
 
-
-                <!-- Subject progress -->
-                <div class="dashboard-card analytics-card">
-
-                    <div class="dashboard-card-header">
-
-                        <div>
-                            <span class="card-eyebrow">SUBJECTS</span>
-                            <h3>Subject progress</h3>
-                        </div>
-
-                    </div>
-
-
-                    <div class="subject-progress-list" id="subjectProgressList">
-
-                        <div class="subject-progress-item">
-
-                            <div class="subject-progress-heading">
-                                <span>Mathematics</span>
-                                <strong>0%</strong>
-                            </div>
-
-                            <div class="progress-bar">
-                                <div
-                                    class="progress-bar-fill"
-                                    style="width: 0%"
-                                ></div>
-                            </div>
-
-                        </div>
-
-
-                        <div class="subject-progress-item">
-
-                            <div class="subject-progress-heading">
-                                <span>English</span>
-                                <strong>0%</strong>
-                            </div>
-
-                            <div class="progress-bar">
-                                <div
-                                    class="progress-bar-fill"
-                                    style="width: 0%"
-                                ></div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             PRACTICE
-        ========================== -->
-        <section class="dashboard-section" id="practice">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-                    <span class="section-eyebrow">PRACTICE</span>
-                    <h2>Practice Questions</h2>
-                    <p>
-                        Test your understanding and strengthen weak areas.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div class="practice-dashboard-grid">
-
-                <div class="dashboard-card practice-card">
-
-                    <div class="practice-card-icon">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-
-                    <h3>AI Practice</h3>
-
-                    <p>
-                        Generate questions based on the subjects and topics
-                        you're currently studying.
-                    </p>
-
-                    <button
-                        class="dashboard-primary-button"
-                        id="generatePracticeButton"
-                    >
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        Generate Questions
-                    </button>
-
-                </div>
-
-
-                <div class="dashboard-card practice-card">
-
-                    <div class="practice-card-icon">
-                        <i class="fa-solid fa-file-circle-question"></i>
-                    </div>
-
-                    <h3>Exam Preparation</h3>
-
-                    <p>
-                        Practice questions designed around your selected
-                        curriculum and examination type.
-                    </p>
-
-                    <button
-                        class="dashboard-secondary-button"
-                        id="examPracticeButton"
-                    >
-                        Start Practice
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- Generated questions -->
-            <div
-                class="dashboard-card generated-questions"
-                id="generatedQuestions"
-                style="display: none;"
-            >
-
-                <div class="dashboard-card-header">
+                <div class="calendar-legend">
 
                     <div>
-                        <span class="card-eyebrow">AI GENERATED</span>
-                        <h3>Practice Questions</h3>
+                        <span class="legend-dot study-dot"></span> Study Day
                     </div>
 
-                    <button
-                        class="card-menu-button"
-                        id="closeQuestions"
-                    >
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                    <div>
+                        <span class="legend-dot completed-dot"></span> Completed
+                    </div>
+
+                    <div>
+                        <span class="legend-dot exam-dot"></span> Test / Exam
+                    </div>
+
+                    <div>
+                        <span class="legend-dot break-dot"></span> Break Day
+                    </div>
 
                 </div>
 
-                <div id="questionsContainer"></div>
+
+                <div class="calendar-legend">
+
+                    <span>
+                    🔵 Study Day
+                </span>
+
+                    <span>
+                    🟢 Completed
+                </span>
+
+                    <span>
+                    🟠 Test / Exam
+                </span>
+
+                    <span>
+                    🟣 Break Day
+                </span>
+
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- =========================
-             RESOURCES
-        ========================== -->
-        <section class="dashboard-section" id="resources">
 
-            <div class="dashboard-section-heading">
+        <!-- BOTTOM SECTION -->
 
-                <div>
-                    <span class="section-eyebrow">LEARNING MATERIALS</span>
-                    <h2>Your Resources</h2>
-                    <p>
-                        Keep your study materials organized.
+        <section class="bottom-dashboard">
+
+
+            <!-- TODAY'S STUDY -->
+
+            <div class="panel-card today-study-card">
+
+                <div class="study-card-header">
+
+                    <div class="study-card-title">
+
+                        <div class="study-icon">
+                            🎯
+                        </div>
+
+                        <div>
+                            <p class="study-eyebrow">
+                                CURRENT STUDY SESSION
+                            </p>
+
+                            <h2>Today's Focus</h2>
+                        </div>
+
+                    </div>
+
+                    <div class="live-indicator">
+                        <span></span> LIVE
+                    </div>
+
+                </div>
+
+
+                <div id="currentStudy" class="current-study">
+
+                    <p class="study-label">
+                        UP NEXT
                     </p>
+
+                    <h2 id="currentSubject">
+                        —
+                    </h2>
+
+                    <h3 id="currentTopic">
+                        No topic available
+                    </h3>
+
+
+                    <div class="topic-time">
+
+                        <div class="time-icon">
+                            ⏱
+                        </div>
+
+                        <div>
+                            <span class="time-label">
+                    Required study time
+                </span>
+
+                            <strong id="topicTime">
+                    —
+                </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- TIMER -->
+
+                    <div class="timer-container">
+
+                        <p class="timer-label">
+                            STUDY TIMER
+                        </p>
+
+                        <div id="studyTimer" class="study-timer">
+                            00:00
+                        </div>
+
+                    </div>
+
+
+                    <!-- START / PAUSE BUTTON -->
+
+                    <button id="startStudyButton" class="start-study-button">
+            <span class="button-icon">▶</span>
+            <span>Start Studying</span>
+        </button>
+
+
+                    <!-- COMPLETE TOPIC -->
+
+                    <label class="complete-topic">
+
+            <input
+                type="checkbox"
+                id="completeTopicCheckbox"
+            >
+
+            <span class="custom-checkbox"></span>
+
+            <span class="complete-text">
+                I've completed this topic
+            </span>
+
+        </label>
+
+
+                    <!-- COMPLETION MESSAGE -->
+
+                    <p id="completionMessage" class="completion-message"></p>
+
+
+                    <div class="study-tip">
+
+                        <span>💡</span>
+
+                        <p>
+                            Stay focused and complete this topic before moving to the next one.
+                        </p>
+
+                    </div>
+
                 </div>
 
             </div>
 
 
-            <div class="resources-grid">
+            <!-- TODAY'S SCHEDULE -->
 
-                <div class="dashboard-card resource-card">
+            <div class="panel-card" id="schedule">
 
-                    <div class="resource-icon">
-                        <i class="fa-solid fa-file-pdf"></i>
-                    </div>
+                <h2>🕒 Today's Schedule</h2>
 
-                    <div class="resource-content">
+                <div id="todaySchedule">
 
-                        <span class="resource-type">
-                            PDF
-                        </span>
-
-                        <h3>Study Notes</h3>
-
-                        <p>
-                            Upload and summarize your study materials.
-                        </p>
-
-                    </div>
-
-                    <button class="resource-action">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </button>
-
-                </div>
-
-
-                <div class="dashboard-card resource-card">
-
-                    <div class="resource-icon">
-                        <i class="fa-solid fa-note-sticky"></i>
-                    </div>
-
-                    <div class="resource-content">
-
-                        <span class="resource-type">
-                            NOTES
-                        </span>
-
-                        <h3>Key Points</h3>
-
-                        <p>
-                            Review important concepts from your materials.
-                        </p>
-
-                    </div>
-
-                    <button class="resource-action">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </button>
-
-                </div>
-
-
-                <div class="dashboard-card resource-card">
-
-                    <div class="resource-icon">
-                        <i class="fa-solid fa-layer-group"></i>
-                    </div>
-
-                    <div class="resource-content">
-
-                        <span class="resource-type">
-                            REVIEW
-                        </span>
-
-                        <h3>Revision Materials</h3>
-
-                        <p>
-                            Keep track of materials you need to revisit.
-                        </p>
-
-                    </div>
-
-                    <button class="resource-action">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             ACHIEVEMENTS
-        ========================== -->
-        <section class="dashboard-section" id="achievements">
-
-            <div class="dashboard-section-heading">
-
-                <div>
-                    <span class="section-eyebrow">ACHIEVEMENTS</span>
-                    <h2>Your Badges</h2>
                     <p>
-                        Keep studying to unlock new achievements.
+                        Your schedule will appear here.
                     </p>
-                </div>
-
-            </div>
-
-
-            <div class="badges-grid">
-
-                <div class="badge-card">
-
-                    <div class="badge-icon">
-                        <i class="fa-solid fa-rocket"></i>
-                    </div>
-
-                    <h3>First Step</h3>
-
-                    <p>Complete your first study session.</p>
-
-                    <span class="badge-status locked">
-                        Locked
-                    </span>
-
-                </div>
-
-
-                <div class="badge-card">
-
-                    <div class="badge-icon">
-                        <i class="fa-solid fa-fire"></i>
-                    </div>
-
-                    <h3>On Fire</h3>
-
-                    <p>Maintain a 7-day study streak.</p>
-
-                    <span class="badge-status locked">
-                        Locked
-                    </span>
-
-                </div>
-
-
-                <div class="badge-card">
-
-                    <div class="badge-icon">
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-
-                    <h3>Bookworm</h3>
-
-                    <p>Complete 25 study tasks.</p>
-
-                    <span class="badge-status locked">
-                        Locked
-                    </span>
-
-                </div>
-
-
-                <div class="badge-card">
-
-                    <div class="badge-icon">
-                        <i class="fa-solid fa-trophy"></i>
-                    </div>
-
-                    <h3>Study Champion</h3>
-
-                    <p>Reach 100% of your study plan.</p>
-
-                    <span class="badge-status locked">
-                        Locked
-                    </span>
 
                 </div>
 
             </div>
 
         </section>
-
-
-        <!-- =========================
-             FOOTER
-        ========================== -->
-        <footer class="dashboard-footer">
-
-            <div>
-                <strong>StudyMind AI</strong>
-                <span>Study smarter. Prepare better.</span>
-            </div>
-
-            <p>
-                © 2026 StudyMind AI. All rights reserved.
-            </p>
-
-        </footer>
 
     </main>
 
 
-    <!-- =========================
-         NOTIFICATION PANEL
-    ========================== -->
-    <div class="notification-panel" id="notificationPanel">
-
-        <div class="notification-panel-header">
-
-            <h3>Notifications</h3>
-
-            <button id="closeNotifications">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div class="notification-content">
-
-            <div class="notification-item">
-
-                <div class="notification-icon">
-                    <i class="fa-solid fa-bell"></i>
-                </div>
-
-                <div>
-                    <strong>Welcome to your dashboard!</strong>
-                    <p>
-                        Your personalized study information will appear here.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         SETTINGS MODAL
-    ========================== -->
-    <div class="dashboard-modal" id="settingsModal">
-
-        <div class="dashboard-modal-content">
-
-            <div class="dashboard-modal-header">
-
-                <div>
-                    <span class="card-eyebrow">PREFERENCES</span>
-                    <h3>Settings</h3>
-                </div>
-
-                <button id="closeSettings">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-
-            </div>
-
-
-            <div class="settings-options">
-
-                <div class="setting-row">
-
-                    <div>
-                        <strong>Dark Mode</strong>
-                        <p>Use the dark StudyMind interface.</p>
-                    </div>
-
-                    <label class="toggle-switch">
-
-                        <input
-                            type="checkbox"
-                            id="settingsThemeToggle"
-                            checked
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="setting-row">
-
-                    <div>
-                        <strong>Notifications</strong>
-                        <p>Receive study reminders and updates.</p>
-                    </div>
-
-                    <label class="toggle-switch">
-
-                        <input
-                            type="checkbox"
-                            id="notificationsToggle"
-                            checked
-                        >
-
-                        <span class="toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- Dashboard JavaScript -->
     <script src="dashboard.js"></script>
 
 </body>
+
 </html>
